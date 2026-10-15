@@ -21,3 +21,6 @@ docker compose up -d --build
 Open `http://192.168.1.20:8899`. Docker uses `1panel-network` and stores data at `/opt/PrintQuote/data/printquote.sqlite`. Keep the existing data directory when upgrading.
 
 **Security:** There is no authentication. Keep the application on your private LAN or Tailscale network; do not expose it publicly. Export backups in Settings or back up the SQLite file while the API is stopped.
+
+### v1.8 — Slate-blue colour refresh
+Layered blue, slate and accent-tinted backgrounds, softly graded cards, richer active navigation, and lighter dark mode. Existing workspace colours remain configurable; use Settings → Reset colours to apply the new defaults to existing installations.

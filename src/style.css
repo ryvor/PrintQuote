@@ -331,3 +331,10 @@
 .shell .unified-save .save-dropdown-menu button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;background:var(--hover-tint)}
 .shell .unified-save .save-default-check{margin-left:auto;color:var(--accent)}
 @media(max-width:480px){.shell .unified-save-trigger{padding:10px 12px}.shell .unified-save .save-dropdown-menu{left:0;right:auto;min-width:210px}}
+
+/* v2.4.1 printer accuracy cards */
+.shell .accuracy-panel{margin:1rem 0;padding:1rem;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--accent) 5%,var(--card))}
+.shell .accuracy-panel h3{font-size:0.95rem;margin:0 0 .6rem;color:var(--ink)}
+.shell .accuracy-panel .printer-details{margin:.65rem 0}
+.shell .accuracy-toggle{display:flex;gap:.6rem;align-items:center;cursor:pointer;font-weight:600;color:var(--ink);font-size:.88rem}
+.shell .accuracy-toggle input{accent-color:var(--accent);width:18px;height:18px}

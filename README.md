@@ -1,4 +1,4 @@
-# PrintQuote v2.1.2 — Self-hosted Docker + SQLite
+# PrintQuote v2.4.1 — Self-hosted Docker + SQLite
 
 PrintQuote is a modular 3D-printing cost, product, inventory and sales analytics application. This edition is designed **only for self-hosting with Docker**. It does not require Cloudflare Pages, D1, Postgres, or any external database service.
 
@@ -22,7 +22,7 @@ The application consists of two containers: Nginx serves the Vue interface and p
 Initial username: `admin`  
 Initial password: `admin`
 
-**Change the default password immediately** from the user menu before allowing anyone else access. New user passwords require at least six characters, one number and one special character. An administrator can add users and assign Admin, Manager and Viewer roles. These credentials are for initial setup only and are unsafe on a publicly accessible deployment.
+**Change the default password immediately** from the user menu before allowing anyone else access. New user passwords require at least six characters, one number and one special character. An administrator can add users and assign Administrator, User and Viewer roles. These credentials are for initial setup only and are unsafe on a publicly accessible deployment.
 
 ## Existing installations / upgrades
 
@@ -47,9 +47,9 @@ Vite runs on port 5173, Express on port 3001, and the development database is `s
 
 - Modular workspace: enable or disable Dashboard, Quotes, Products, Filaments, Printers, Sales Analytics, Inventory, Advanced Costing and Forecasting.
 - Cost calculator, saved products and quotes, product variants and per-variant components, packaging and maintenance costs.
-- Filament profiles, physical spool inventory, stock adjustments and optional deductions when recording sales.
+- Filament profiles, physical spool inventory, stock adjustments and optional deductions when recording print runs.
 - Sales records, dashboard profitability analytics and basic weighted demand forecasts (heuristics, **not** external market predictions).
-- Login, Remember me, user menu with initials, role-based access (Admin / Manager / Viewer) and basic activity history.
+- Login, Remember me, user menu with initials, role-based access (Administrator / User / Viewer) and basic activity history.
 
 ## Operational and security notes
 
@@ -103,3 +103,11 @@ For development, start with `npm run dev` and inspect the API terminal output. F
 ## v2.2.4 — Role-aware onboarding
 
 The guided tour now adapts to each signed-in account. Regular users are not shown administrator-only steps; administrators are guided through workspace settings and account management. Disabled modules are omitted. Read-only legacy viewers receive informational steps rather than prompts to edit. Tour completion is stored per account in the browser (localStorage) rather than as a shared workspace flag. The help icon in the header restarts the tailored tour. Because completion is browser-local, users may see the tour again on another browser/device.
+
+## v2.4.1 — Printer Accuracy Profiles
+
+On **Printer profiles**, each printer shows an accuracy panel after at least **five successful, valid print runs**. The panel compares actual print duration and filament consumption with the estimates captured when the print was recorded. Failed runs are excluded.
+
+Administrators and Users can optionally enable **Apply learned corrections to future cost estimates** on each printer. This adjusts estimated material cost and time-based electricity/machine overhead for new calculations and product costing, using observed ratios capped between 0.5× and 1.5×. It does not change recorded history or inventory. Viewer accounts can read accuracy information but cannot change the setting. The algorithm is an aggregate historical heuristic, not AI or a guarantee of future performance.
+
+**Documentation:** [CHANGELOG.md](CHANGELOG.md) contains all consolidated release notes. [ROADMAP.md](ROADMAP.md) describes proposed releases through v4.0 and future ideas. Update both documents and this README with every release.

@@ -59,3 +59,11 @@ The app now requires login. The **initial** account is `admin` / `admin`. **Chan
 The first request bootstraps `admin/admin` if the users table is empty. Cloudflare deployments should be access-restricted until this password is changed. The D1 binding and schema are required; static-only Pages deployment will not work.
 
 Security notes: This is starter authentication, not a hardened internet-facing identity provider. Before wider public deployment, add login rate limiting / Cloudflare WAF, enforce strong initial admin password via secret provisioning, use HTTP-only secure cookies instead of browser-stored bearer tokens, add audit logging and concurrent-write protection, and consider account recovery / MFA. Existing workspace state uses last-write-wins, so simultaneous edits from multiple users can overwrite each other.
+
+## v2.0 Workshop modules (initial release)
+
+This release adds optional **physical spool inventory** (with manual stock movements), **product variants**, and **per-variant bill of materials**, packaging and maintenance allowances. Product sales record the selected variant and a snapshot of estimated costs. The dashboard includes a sales date filter and a simple per-product three-month weighted demand indicator (20%/30%/50%); it is not a market prediction.
+
+To get started: enable Inventory, Advanced Costing and Forecasting in Settings; add filament/printer profiles, add physical spools in Spool Inventory, and edit a product to add variants and component costs. Spool movements are intentionally manual: a sale does not necessarily correspond to a completed print.
+
+**Scope and limitations:** This is an incremental v2.0, not a completed migration to a relational multi-tenant system. Existing app data remains a JSON document inside SQLite or Cloudflare D1, and all users share one workspace. Existing login and role behaviour remains as in v1.11. The existing default admin/admin account is insecure for public use and must be changed. Advanced forecasting, multi-workspace isolation, audited permissions, secure cookie sessions, and automated stock consumption require further work. Back up your existing database before upgrading. No existing product data is deleted; products without variants continue to use their original costing fields.

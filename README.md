@@ -98,3 +98,8 @@ Every signed-in user checks the running application version once a minute and re
 Fixed initial administrator creation when the `users` table has an `email` column. The SQL statement now names the seven required columns explicitly, leaving `email` nullable. Previously, starting with an empty database could fail with `table users has 8 columns but 7 values were supplied`, preventing the API from starting and causing login requests to fail. Existing user accounts and data are not reset.
 
 For development, start with `npm run dev` and inspect the API terminal output. For Docker, rebuild using `docker compose up -d --build` and inspect `docker compose logs api` (service name may vary).
+
+
+## v2.2.4 — Role-aware onboarding
+
+The guided tour now adapts to each signed-in account. Regular users are not shown administrator-only steps; administrators are guided through workspace settings and account management. Disabled modules are omitted. Read-only legacy viewers receive informational steps rather than prompts to edit. Tour completion is stored per account in the browser (localStorage) rather than as a shared workspace flag. The help icon in the header restarts the tailored tour. Because completion is browser-local, users may see the tour again on another browser/device.

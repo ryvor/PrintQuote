@@ -1,13 +1,8 @@
 {
   "name": "printquote-api",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "type": "module",
   "private": true,
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "express": "^4.21.2",
-    "pg": "^8.13.1"
-  }
+  "scripts": {"start": "node index.js"},
+  "dependencies": {"express": "^4.21.2", "sql.js": "^1.13.0"}
 }

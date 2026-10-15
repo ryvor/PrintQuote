@@ -19,3 +19,7 @@ Start PostgreSQL/API using Docker Compose, or run API locally with `DATABASE_URL
 ## Important
 
 This is a **single shared workspace**, not a multi-user system. Concurrent edits from different browsers can overwrite one another (last write wins). The server has **no authentication**; keep it on a trusted LAN or VPN. Do not expose it directly to the public internet. The first load now reads the server database, not localStorage. To migrate old browser data, export JSON from the old version and import it into the new version. Theme preference is shared across devices; `Auto` uses each device's system theme.
+
+
+## v1.3 interface
+Reference-inspired light/dark sidebar with desktop collapse, mobile drawer and improved responsive layout. Removed save-status header and workspace footer; background database auto-save remains active.

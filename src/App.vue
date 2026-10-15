@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { LayoutDashboard, Calculator, Layers3, Printer, Settings2, Plus, Trash2, ExternalLink, Download, Upload, Box, Zap, Clock3, TrendingUp, PoundSterling, ChevronRight, Info, Check, X, Sun, Moon, Monitor } from 'lucide-vue-next'
+import { LayoutDashboard, Calculator, Layers3, Printer, Settings2, Plus, Trash2, ExternalLink, Download, Upload, Box, Zap, Clock3, TrendingUp, PoundSterling, ChevronRight, Info, Check, X, Sun, Moon, Monitor, PanelLeftClose, PanelLeftOpen, Menu } from 'lucide-vue-next'
 
 const initial = { settings:{currency:'GBP',siteTitle:'PrintQuote',siteSubtitle:'PRINT COST STUDIO',logo:'',accent:'#6478f5',background:'#f7f9ff',darkBackground:'#101827',themeMode:'auto',gridOpacity:0.34,gridSize:28,energyRate:0.28,labourRate:12,defaultMargin:30}, filaments:[{id:'f1',name:'PLA Basic',brand:'Generic',material:'PLA',colour:'Slate Grey',price:18.99,url:''},{id:'f2',name:'PETG',brand:'Generic',material:'PETG',colour:'Black',price:22.5,url:''},{id:'f3',name:'TPU Flexible',brand:'Generic',material:'TPU',colour:'Black',price:29.99,url:''}], printers:[{id:'p1',name:'Bambu Lab A1',technology:'FDM',power:95,setupMinutes:10,postMinutes:10,overheadRate:0.25},{id:'p2',name:'Prusa MK4',technology:'FDM',power:110,setupMinutes:10,postMinutes:15,overheadRate:0.35}], quotes:[] }
 function clone(x){return JSON.parse(JSON.stringify(x))}
@@ -23,7 +23,7 @@ onUnmounted(()=>{media.removeEventListener('change',mediaListener);clearTimeout(
 const logoInput=ref(null)
 function uploadLogo(e){const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith('image/')){toast('Please select an image');return}if(f.size>1024*1024){toast('Logo must be smaller than 1 MB');return}const reader=new FileReader();reader.onload=()=>{state.value.settings.logo=String(reader.result);toast('Logo updated')};reader.readAsDataURL(f);e.target.value=''}
 
-const page=ref('calculator'), mobileMenu=ref(false), notification=ref('')
+const page=ref('calculator'), mobileMenu=ref(false), sidebarCollapsed=ref(false), notification=ref('')
 function toast(t){notification.value=t;setTimeout(()=>notification.value='',3000)}
 const uid=()=>Math.random().toString(36).slice(2,10)
 const money=v=>new Intl.NumberFormat('en-GB',{style:'currency',currency:state.value.settings.currency||'GBP'}).format(Number(v)||0)
@@ -53,16 +53,16 @@ const pageTitle=computed(()=>nav.find(n=>n.id===page.value)?.label||'Calculator'
 </script>
 
 <template>
-<div class="shell" :class="{'dark-mode':isDark}" :style="theme">
+<div class="shell" :class="{'dark-mode':isDark,'sidebar-collapsed':sidebarCollapsed}" :style="theme">
   <aside class="sidebar" :class="{open:mobileMenu}">
     <div class="brand"><div class="brand-icon"><img v-if="state.settings.logo" :src="state.settings.logo" alt="Site logo"/><Box v-else :size="23" :stroke-width="2.5"/></div><div><strong>{{state.settings.siteTitle||'PrintQuote'}}<span>.</span></strong><small>{{state.settings.siteSubtitle||'PRINT COST STUDIO'}}</small></div></div>
-    <div class="side-label">WORKSPACE</div>
-    <nav><button v-for="n in nav" :key="n.id" :class="['nav-link',{active:page===n.id}]" @click="navigate(n.id)"><component :is="n.icon" :size="18"/><span>{{n.label}}</span><ChevronRight class="chev" :size="15"/></button></nav>
-    <div class="side-bottom"><div class="status-dot"></div><div><strong>Shared workspace</strong><small>PostgreSQL database</small></div></div>
+    <button class="sidebar-collapse" type="button" @click="sidebarCollapsed=!sidebarCollapsed" :title="sidebarCollapsed?'Expand sidebar':'Collapse sidebar'" :aria-label="sidebarCollapsed?'Expand sidebar':'Collapse sidebar'"><PanelLeftOpen v-if="sidebarCollapsed" :size="18"/><PanelLeftClose v-else :size="18"/></button><div class="side-label">MENU</div>
+    <nav><button v-for="n in nav" :key="n.id" :title="n.label" :class="['nav-link',{active:page===n.id}]" @click="navigate(n.id)"><component :is="n.icon" :size="18"/><span>{{n.label}}</span><ChevronRight class="chev" :size="15"/></button></nav>
+    <div class="sidebar-footer"><button class="sidebar-settings" type="button" @click="navigate('settings')" title="Settings"><Settings2 :size="18"/><span>Settings</span></button></div>
   </aside>
   <div v-if="mobileMenu" class="mobile-overlay" @click="mobileMenu=false"></div>
   <main class="main">
-    <header class="topbar"><button class="mobile-toggle" @click="mobileMenu=!mobileMenu">☰</button><div class="breadcrumb">Workspace <ChevronRight :size="14"/> <b>{{pageTitle}}</b></div><div class="top-right"><button class="theme-toggle" type="button" @click="cycleTheme" :title="themeLabel" :aria-label="themeLabel"><Monitor v-if="state.settings.themeMode==='auto'" :size="17"/><Sun v-else-if="state.settings.themeMode==='light'" :size="17"/><Moon v-else :size="17"/><span>{{state.settings.themeMode}}</span></button><span class="top-pill" :class="{'sync-failed':syncError}"><span class="status-dot"></span> {{syncStatus}}</span><div class="avatar"><img v-if="state.settings.logo" :src="state.settings.logo" alt="Logo"/><span v-else>{{(state.settings.siteTitle||'PQ').slice(0,2).toUpperCase()}}</span></div></div></header>
+    <header class="topbar"><button class="mobile-toggle" type="button" @click="mobileMenu=!mobileMenu" aria-label="Open navigation"><Menu :size="21"/></button><div class="breadcrumb">Workspace <ChevronRight :size="14"/> <b>{{pageTitle}}</b></div><div class="top-right"><button class="theme-toggle" type="button" @click="cycleTheme" :title="themeLabel" :aria-label="themeLabel"><Monitor v-if="state.settings.themeMode==='auto'" :size="17"/><Sun v-else-if="state.settings.themeMode==='light'" :size="17"/><Moon v-else :size="17"/><span>{{state.settings.themeMode}}</span></button><div class="avatar"><img v-if="state.settings.logo" :src="state.settings.logo" alt="Logo"/><span v-else>{{(state.settings.siteTitle||'PQ').slice(0,2).toUpperCase()}}</span></div></div></header>
     <div class="content"><div v-if="!ready" class="db-warning">Cannot load the shared workspace. Check the database/API container and refresh the page. No local changes will be saved until the connection succeeds.</div>
       <div v-if="page==='calculator'">
         <div class="page-head"><div><div class="eyebrow">ESTIMATE & QUOTE</div><h1>Print cost calculator</h1><p>Know your costs. Price every print with confidence.</p></div><button class="btn primary" @click="saveQuote"><Plus :size="17"/> Save quote</button></div>

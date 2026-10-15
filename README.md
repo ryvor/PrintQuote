@@ -1,92 +1,59 @@
-# PrintQuote v1.5 — Minimal UI + embedded SQLite
+# PrintQuote v2.1.2 — Self-hosted Docker + SQLite
 
-Vue 3 print cost calculator with light/dark/auto themes, custom branding, responsive sidebar, and shared SQLite data.
+PrintQuote is a modular 3D-printing cost, product, inventory and sales analytics application. This edition is designed **only for self-hosting with Docker**. It does not require Cloudflare Pages, D1, Postgres, or any external database service.
 
-## Local development on Hydra
+## Install on Cerberus / 1Panel
+
+From the extracted `printquote-vue` directory:
+
+```bash
+sudo mkdir -p /opt/PrintQuote/data
+sudo chown -R 1000:1000 /opt/PrintQuote/data  # only if your host permissions require it
+
+docker compose up -d --build
+```
+
+Open `http://YOUR-SERVER-IP:8899` (for example `http://192.168.1.20:8899`).
+
+The application consists of two containers: Nginx serves the Vue interface and proxies `/api/` requests to the private Express API. The Express API persists SQLite data at **`/opt/PrintQuote/data/printquote.sqlite`** on the Docker host. The API port is **not** exposed to the host. Docker Compose creates its own internal network; no pre-existing `1panel-network` is required.
+
+## First login
+
+Initial username: `admin`  
+Initial password: `admin`
+
+**Change the default password immediately** from the user menu before allowing anyone else access. New user passwords require at least six characters, one number and one special character. An administrator can add users and assign Admin, Manager and Viewer roles. These credentials are for initial setup only and are unsafe on a publicly accessible deployment.
+
+## Existing installations / upgrades
+
+1. Stop your existing containers: `docker compose down` (do **not** add `-v`).
+2. Back up the database while the API is stopped:
+   `sudo cp /opt/PrintQuote/data/printquote.sqlite /opt/PrintQuote/data/printquote.sqlite.bak`
+3. Replace the project files with this release, retaining `/opt/PrintQuote/data`.
+4. Run `docker compose up -d --build`.
+
+The API creates its tables automatically and retains the existing SQLite database, user accounts, product data, variants, inventory and sales. **Do not delete the data directory**. Existing data is held in an `app_state` JSON record inside the local SQLite file, while users, sessions and activity history have separate SQL tables. This release does not claim to migrate all workspace records into relational tables.
+
+## Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-`npm install` installs both frontend and server dependencies. `npm run dev` now starts **both** the API on port 3001 and Vite on port 5173, fixing the previous `/api/state ECONNREFUSED` error. The local development database is stored at `server/printquote-dev.sqlite` and is separate from the Docker database.
+Vite runs on port 5173, Express on port 3001, and the development database is `server/printquote-dev.sqlite`.
 
-## Docker / 1Panel on Cerberus
+## Features
 
-```bash
-sudo mkdir -p /opt/PrintQuote/data
-docker compose up -d --build
-```
+- Modular workspace: enable or disable Dashboard, Quotes, Products, Filaments, Printers, Sales Analytics, Inventory, Advanced Costing and Forecasting.
+- Cost calculator, saved products and quotes, product variants and per-variant components, packaging and maintenance costs.
+- Filament profiles, physical spool inventory, stock adjustments and optional deductions when recording sales.
+- Sales records, dashboard profitability analytics and basic weighted demand forecasts (heuristics, **not** external market predictions).
+- Login, Remember me, user menu with initials, role-based access (Admin / Manager / Viewer) and basic activity history.
 
-Open `http://192.168.1.20:8899`. Docker uses `1panel-network` and stores data at `/opt/PrintQuote/data/printquote.sqlite`. Keep the existing data directory when upgrading.
+## Operational and security notes
 
-**Security:** There is no authentication. Keep the application on your private LAN or Tailscale network; do not expose it publicly. Export backups in Settings or back up the SQLite file while the API is stopped.
-
-### v1.8 — Slate-blue colour refresh
-Layered blue, slate and accent-tinted backgrounds, softly graded cards, richer active navigation, and lighter dark mode. Existing workspace colours remain configurable; use Settings → Reset colours to apply the new defaults to existing installations.
-
-### v1.8.2 colour audit
-- Unified hover and focus colours across navigation, Settings, controls, forms and add cards.
-- Active navigation stays accented on hover in light and dark mode.
-- Destructive hover stays red.
-
-## v1.9 — costing, products, and sales
-- Dashboard with recorded revenue, estimated gross profit, six-month chart, best-selling products and recent sales.
-- Calculator: Save quote primary button + dropdown to save a product; add saved products as quote line items.
-- Products: live unit cost and gross margin from current filament, printer and business rates; load into calculator, add to quote, or record a sale.
-- Saved quotes and recorded sales keep price/cost snapshots. Product costs are live, while their manually entered selling prices remain fixed.
-- Sales forecast is a **simple heuristic** based on recorded monthly unit volume, not an external market forecast. Requires data in two previous months.
-- Existing databases automatically acquire an empty `sales` array. Back up your SQLite file before upgrading.
-
-## v1.10 Modular workspace
-Settings → Workspace features provides three presets and seven independent switches. Cost Calculator and Settings are always present. Disabling a page hides its navigation and associated actions without deleting saved data. Filament stock is optional and manually maintained (sales do not automatically deduct material). Feature preferences are persisted in the same shared SQLite state as other settings.
-
-## v1.11 authentication and Cloudflare Pages
-
-The app now requires login. The **initial** account is `admin` / `admin`. **Change it immediately** under the user menu → My account. The initial credentials are insecure and must never be left unchanged on a public deployment. The admin can create users in Account menu → Administration. Passwords require 6+ characters, a digit and a special character. User records and hashed passwords live in the server database, never in the shared workspace JSON. Session tokens are stored hashed on the server; Remember me stores the token in browser localStorage (30-day server expiry), otherwise sessionStorage (1-day server expiry, cleared on tab/browser session end). Users share one workspace; there is no per-user data isolation. User accounts do not appear in JSON exports.
-
-### Cloudflare Pages + D1
-
-**Cloudflare Pages cannot run the existing Express server or use the on-disk SQLite database.** This release includes a Pages Function API and a Cloudflare D1 (SQLite-compatible) backend, using the same frontend API routes. D1 is a different database: **data is not migrated automatically** from your Cerberus SQLite file.
-
-1. Install Wrangler: `npm install -D wrangler` (or use `npx wrangler`).
-2. Create a D1 database: `npx wrangler d1 create printquote`.
-3. Set `database_id` in `wrangler.toml` to the returned ID. Bind the D1 database as **DB** in your Cloudflare Pages project settings too, if configuring through the dashboard.
-4. Initialise D1: `npx wrangler d1 execute printquote --remote --file=./schema.sql`.
-5. Build: `npm install && npm run build`. Deploy the `dist` directory as a **Cloudflare Pages project**, including the repository's `functions/` folder (Git integration recommended). For local Pages testing: `npx wrangler pages dev dist --d1 DB=printquote` (refer to your Wrangler version's D1 local binding syntax).
-6. On first login, change the default password before publishing. Use HTTPS. To transfer existing data, export a JSON backup from your local installation and import it into the Pages deployment.
-
-The first request bootstraps `admin/admin` if the users table is empty. Cloudflare deployments should be access-restricted until this password is changed. The D1 binding and schema are required; static-only Pages deployment will not work.
-
-Security notes: This is starter authentication, not a hardened internet-facing identity provider. Before wider public deployment, add login rate limiting / Cloudflare WAF, enforce strong initial admin password via secret provisioning, use HTTP-only secure cookies instead of browser-stored bearer tokens, add audit logging and concurrent-write protection, and consider account recovery / MFA. Existing workspace state uses last-write-wins, so simultaneous edits from multiple users can overwrite each other.
-
-## v2.0 Workshop modules (initial release)
-
-This release adds optional **physical spool inventory** (with manual stock movements), **product variants**, and **per-variant bill of materials**, packaging and maintenance allowances. Product sales record the selected variant and a snapshot of estimated costs. The dashboard includes a sales date filter and a simple per-product three-month weighted demand indicator (20%/30%/50%); it is not a market prediction.
-
-To get started: enable Inventory, Advanced Costing and Forecasting in Settings; add filament/printer profiles, add physical spools in Spool Inventory, and edit a product to add variants and component costs. Spool movements are intentionally manual: a sale does not necessarily correspond to a completed print.
-
-**Scope and limitations:** This is an incremental v2.0, not a completed migration to a relational multi-tenant system. Existing app data remains a JSON document inside SQLite or Cloudflare D1, and all users share one workspace. Existing login and role behaviour remains as in v1.11. The existing default admin/admin account is insecure for public use and must be changed. Advanced forecasting, multi-workspace isolation, audited permissions, secure cookie sessions, and automated stock consumption require further work. Back up your existing database before upgrading. No existing product data is deleted; products without variants continue to use their original costing fields.
-
-## v2.1 — Advanced workshop features
-
-- **Inventory:** When recording a sale, optionally select a matching physical spool and deduct the variant's estimated filament usage. Stock is not deducted unless explicitly selected. Movements are recorded with a reason. Check quantities before saving; a sale and deduction are stored in the same shared workspace update.
-- **Advanced costing:** Product variants retain their own print requirements, packaging, maintenance and additional bill-of-materials component costs. Live estimates reflect current material and electricity prices; recorded sales retain historical cost snapshots.
-- **Analytics:** The dashboard now includes gross margin, average recorded sale, revenue concentration and the most profitable products, filtered by the existing date selector.
-- **Forecasting:** A weighted three-month demand estimate with a rough variability range and a clearly labelled confidence indicator. It is a planning heuristic, **not** a statistically calibrated prediction interval or an external market forecast.
-- **Collaboration:** Admins can assign Viewer, Manager or Administrator roles. The Express and Cloudflare D1 APIs prevent Viewer accounts from saving workspace state. Admins can inspect a basic activity log of workspace saves and role changes.
-
-### Upgrade notes
-
-For Cloudflare D1, apply the additional `activity_log` table from `schema.sql` to an existing D1 database before deploying this version. Docker/Express creates the table automatically. Back up your database first. The application still stores the shared workspace as a JSON document in SQLite/D1; concurrent edits from multiple users can overwrite each other. Role permissions are enforced at API endpoints but per-record ownership, secure cookie sessions, granular audit diffs, and conflict-free collaboration are not yet implemented. Do not treat this as a fully hardened public multi-tenant system.
-
-
-## v2.1.1 Cloudflare Pages deployment correction
-
-The Vue build command is `npm run build`, output directory `dist`, root directory the folder containing `package.json`, and the deploy command for **Cloudflare Pages** is `npx wrangler pages deploy dist --project-name printquote` (or leave the deploy command blank for normal Git-connected Pages automatic deployment). **Do not use `npx wrangler deploy`**, which deploys Workers, not Pages. The `functions/` directory must be present at the project root for Pages Functions.
-
-Before deployment, create the D1 database and replace `REPLACE_WITH_YOUR_D1_DATABASE_ID` in `wrangler.toml` with its actual UUID. Initialise the schema with `npx wrangler d1 execute printquote --remote --file=./schema.sql`. For existing databases, applying the schema may require handling existing objects; back up first. Bind the D1 database as `DB` to the Pages project.
-
-If using Cloudflare's newer Workers build configuration rather than a Pages project, create/select a **Pages** project instead. The Wrangler Pages deployment command needs the Pages project to exist; if its name is different, change `--project-name` accordingly.
-
-**Note:** The build log ending at `wrangler 4.151.0` does not show the final failure; this change fixes the likely Pages/Workers command mismatch but cannot guarantee there are no later errors.
+- The SQLite file must be writable by the API container. Back up while the API is stopped to ensure a consistent snapshot.
+- User sessions are bearer tokens stored in browser storage. This is **not** yet a hardened internet-facing authentication system; use a private LAN, Tailscale or an appropriately protected HTTPS reverse proxy. Change `admin/admin` immediately.
+- All users share one workspace. Simultaneous edits are last-write-wins; there is no per-record conflict resolution.
+- No Cloudflare D1 or Cloudflare Pages configuration is included. Cloudflare Tunnel is optional if you later choose to expose the self-hosted service.

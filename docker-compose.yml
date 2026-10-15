@@ -7,7 +7,6 @@ services:
       - printquote-api
     ports:
       - "8899:80"
-    networks: [1panel-network]
 
   printquote-api:
     build:
@@ -16,12 +15,8 @@ services:
     container_name: printquote-api
     restart: unless-stopped
     environment:
-      PORT: 3001
+      PORT: "3001"
       SQLITE_PATH: /data/printquote.sqlite
     volumes:
       - /opt/PrintQuote/data:/data
-    networks: [1panel-network]
-
-networks:
-  1panel-network:
-    external: true
+    # Internal-only: API is reachable from the frontend container, not published to the host.

@@ -1,6 +1,6 @@
 {
   "name": "printquote-vue",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,8 +9,7 @@
     "preview": "vite preview --host 0.0.0.0",
     "dev:frontend": "vite --host 0.0.0.0",
     "dev:api": "npm --prefix server start",
-    "postinstall": "npm install --prefix server --no-audit --no-fund",
-    "deploy:pages": "wrangler pages deploy dist --project-name printquote"
+    "postinstall": "npm install --prefix server --no-audit --no-fund"
   },
   "dependencies": {
     "vue": "^3.5.13",

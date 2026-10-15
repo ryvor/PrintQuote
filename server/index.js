@@ -37,6 +37,25 @@ function emailValid(value){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value
 function mailer(){if(!process.env.SMTP_HOST||!process.env.SMTP_FROM)throw Error('Email delivery is not configured. Set SMTP_HOST and SMTP_FROM first.');return nodemailer.createTransport({host:process.env.SMTP_HOST,port:Number(process.env.SMTP_PORT||587),secure:process.env.SMTP_SECURE==='true',auth:process.env.SMTP_USER?{user:process.env.SMTP_USER,pass:process.env.SMTP_PASSWORD}:undefined})}
 async function sendNotice(to,subject,body){await mailer().sendMail({from:process.env.SMTP_FROM,to,subject,text:body})}
 function adminOnly(req,res,next){if(req.user.role!=='admin')return res.status(403).json({error:'Administrator access required'});next()}
+// Optional remote catalogue: configure PRINTER_CATALOG_URL with a trusted HTTPS JSON feed.
+// The local catalogue remains available when the remote source cannot be reached.
+let catalogCache=null,catalogCacheUntil=0;
+app.get('/api/printer-catalog',async(_req,res)=>{
+ const fallback=JSON.parse(fs.readFileSync(new URL('./printer-catalog.json',import.meta.url),'utf8'));
+ const url=process.env.PRINTER_CATALOG_URL;
+ if(!url)return res.json(fallback);
+ if(!/^https:\/\//.test(url))return res.json(fallback);
+ if(catalogCache&&Date.now()<catalogCacheUntil)return res.json(catalogCache);
+ try{
+  const response=await fetch(url,{signal:AbortSignal.timeout(6000),redirect:'error'});
+  if(!response.ok||Number(response.headers.get('content-length')||0)>1000000)throw Error('Catalog response invalid');
+  const body=await response.text();if(body.length>1000000)throw Error('Catalogue too large');
+  const data=JSON.parse(body);
+  if(!Array.isArray(data)||data.length>10000||!data.every(x=>x&&typeof x.brand==='string'&&typeof x.series==='string'&&typeof x.model==='string'))throw Error('Invalid catalogue schema');
+  catalogCache=data.map(x=>({brand:x.brand.slice(0,100),series:x.series.slice(0,100),model:x.model.slice(0,100),technology:String(x.technology||'FDM').slice(0,30)}));catalogCacheUntil=Date.now()+6*3600000;
+  res.json(catalogCache);
+ }catch(e){console.warn('Printer catalogue refresh failed:',e.message);res.json(catalogCache||fallback)}
+});
 app.get('/api/health',(_req,res)=>res.json({ok:true,storage:'sqlite'}));
 app.post('/api/auth/login',async(req,res)=>{const {username,password,remember}=req.body||{};const user=one('SELECT * FROM users WHERE username=?',[String(username||'')]);if(!user||!await verifyPassword(String(password||''),user.password_hash))return res.status(401).json({error:'Invalid username or password'});const token=randomToken();run('INSERT INTO sessions VALUES (?,?,?)',[await digest(token),user.id,sessionExpiry(!!remember)]);res.json({token,user:publicUser(user)})});
 app.get('/api/auth/me',authenticate,(req,res)=>res.json({user:publicUser(req.user)}));

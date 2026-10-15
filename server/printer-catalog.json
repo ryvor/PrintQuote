@@ -1,0 +1,68 @@
+[
+  {
+    "brand": "Bambu Lab",
+    "series": "A1 Series",
+    "model": "A1",
+    "technology": "FDM"
+  },
+  {
+    "brand": "Bambu Lab",
+    "series": "A1 Series",
+    "model": "A1 mini",
+    "technology": "FDM"
+  },
+  {
+    "brand": "Bambu Lab",
+    "series": "P1 Series",
+    "model": "P1P",
+    "technology": "FDM"
+  },
+  {
+    "brand": "Bambu Lab",
+    "series": "P1 Series",
+    "model": "P1S",
+    "technology": "FDM"
+  },
+  {
+    "brand": "Bambu Lab",
+    "series": "X1 Series",
+    "model": "X1 Carbon",
+    "technology": "FDM"
+  },
+  {
+    "brand": "Prusa",
+    "series": "MK Series",
+    "model": "MK4S",
+    "technology": "FDM"
+  },
+  {
+    "brand": "Prusa",
+    "series": "MINI Series",
+    "model": "MINI+",
+    "technology": "FDM"
+  },
+  {
+    "brand": "Creality",
+    "series": "Ender-3",
+    "model": "Ender-3 V3",
+    "technology": "FDM"
+  },
+  {
+    "brand": "Creality",
+    "series": "K1 Series",
+    "model": "K1",
+    "technology": "FDM"
+  },
+  {
+    "brand": "Elegoo",
+    "series": "Neptune",
+    "model": "Neptune 4",
+    "technology": "FDM"
+  },
+  {
+    "brand": "Anycubic",
+    "series": "Kobra",
+    "model": "Kobra 3",
+    "technology": "FDM"
+  }
+]

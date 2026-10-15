@@ -57,3 +57,6 @@ Vite runs on port 5173, Express on port 3001, and the development database is `s
 - User sessions are bearer tokens stored in browser storage. This is **not** yet a hardened internet-facing authentication system; use a private LAN, Tailscale or an appropriately protected HTTPS reverse proxy. Change `admin/admin` immediately.
 - All users share one workspace. Simultaneous edits are last-write-wins; there is no per-record conflict resolution.
 - No Cloudflare D1 or Cloudflare Pages configuration is included. Cloudflare Tunnel is optional if you later choose to expose the self-hosted service.
+
+### v2.1.3 sign-in appearance fix
+The login page automatically follows the browser/operating system light or dark preference. Its Sign in button uses an explicit high-contrast background and text colour in both modes. In-app appearance settings remain unchanged.

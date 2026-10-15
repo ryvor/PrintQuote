@@ -214,3 +214,72 @@
 .v2-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:18px 0}
 .v2-metrics>div{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:12px;background:var(--hover-tint,var(--input))}
 .v2-metrics strong{font-size:1.45rem}.v2-checkbox{display:flex;align-items:center;gap:10px;padding:12px 0}.v2-checkbox input{width:18px;height:18px}
+
+/* v2.1.3 — sign-in screen follows the operating-system colour scheme.
+   Scoped to authentication so saved in-app appearance preferences are unchanged. */
+.auth-screen {
+  --login-bg: #f2f6fd;
+  --login-bg-end: #e6eefc;
+  --login-card: #ffffff;
+  --login-text: #1d2b44;
+  --login-muted: #5e6e88;
+  --login-border: #c7d4e8;
+  --login-input: #ffffff;
+  --login-accent: #5277e8;
+  --login-accent-hover: #3d61d0;
+  min-height: 100vh;
+  background: linear-gradient(140deg,var(--login-bg),var(--login-bg-end));
+  color: var(--login-text);
+  color-scheme: light;
+}
+.auth-screen .auth-card {
+  background: var(--login-card);
+  color: var(--login-text);
+  border-color: var(--login-border);
+}
+.auth-screen .auth-card h1 { color: var(--login-text); }
+.auth-screen .auth-card p:not(.auth-error) { color: var(--login-muted); }
+.auth-screen .auth-logo { color: var(--login-accent); }
+.auth-screen .auth-card input:not([type=checkbox]) {
+  background: var(--login-input);
+  color: var(--login-text);
+  border-color: var(--login-border);
+}
+.auth-screen .auth-card input:focus-visible {
+  outline: 2px solid var(--login-accent);
+  outline-offset: 2px;
+}
+.auth-screen .auth-card input[type=checkbox] { accent-color: var(--login-accent); }
+.auth-screen .auth-card .btn.primary,
+.auth-screen .auth-card .btn.primary:disabled {
+  display: inline-flex;
+  width: 100%;
+  min-height: 46px;
+  background: var(--login-accent) !important;
+  border: 1px solid var(--login-accent) !important;
+  color: #ffffff !important;
+  opacity: 1;
+  font-weight: 800;
+}
+.auth-screen .auth-card .btn.primary:hover:not(:disabled),
+.auth-screen .auth-card .btn.primary:focus-visible:not(:disabled) {
+  background: var(--login-accent-hover) !important;
+  border-color: var(--login-accent-hover) !important;
+  color: #ffffff !important;
+}
+.auth-screen .auth-card .btn.primary:disabled { opacity: .7; cursor: wait; }
+@media (prefers-color-scheme: dark) {
+  .auth-screen {
+    --login-bg: #0d1727;
+    --login-bg-end: #192a44;
+    --login-card: #19283c;
+    --login-text: #f0f5ff;
+    --login-muted: #b4c2d8;
+    --login-border: #40536e;
+    --login-input: #111d30;
+    --login-accent: #6288f5;
+    --login-accent-hover: #7698ff;
+    color-scheme: dark;
+  }
+  .auth-screen .auth-card { box-shadow: 0 18px 60px #02081477; }
+}

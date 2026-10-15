@@ -321,3 +321,13 @@
 .shell.dark-mode {color-scheme:dark}
 .shell:not(.dark-mode) {color-scheme:light}
 @media (prefers-reduced-motion:reduce) {.shell input,.shell select,.shell textarea,.shell button{transition:none!important}}
+
+/* v2.3.1: one cohesive save dropdown, not two independent buttons */
+.shell .unified-save-trigger{display:inline-flex;align-items:center;gap:10px;min-height:42px;padding:10px 15px;border-radius:12px;white-space:nowrap}
+.shell .unified-save-chevron{margin-left:10px;transition:transform .16s ease}
+.shell .unified-save-chevron.rotated{transform:rotate(180deg)}
+.shell .unified-save .save-dropdown-menu{right:0;min-width:218px;padding:7px;overflow:hidden}
+.shell .unified-save .save-dropdown-menu button{min-height:43px;color:var(--ink);border-radius:9px;display:flex;gap:10px;align-items:center}
+.shell .unified-save .save-dropdown-menu button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;background:var(--hover-tint)}
+.shell .unified-save .save-default-check{margin-left:auto;color:var(--accent)}
+@media(max-width:480px){.shell .unified-save-trigger{padding:10px 12px}.shell .unified-save .save-dropdown-menu{left:0;right:auto;min-width:210px}}

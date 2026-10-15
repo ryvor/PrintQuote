@@ -1,5 +1,14 @@
 # Changelog
 
+## PrintQuote v2.3.1 — Natural Save Menu
+
+- Replace the separate action and chevron buttons with one unified dropdown button.
+- Show the default action in the button label: Save quote when Quotes is enabled, otherwise Save calculation.
+- Mark the default action inside the menu.
+- Close on outside click or tap, Escape, or action selection.
+- Restore keyboard focus to the trigger after Escape.
+- Preserve History as a separate button.
+
 ## PrintQuote v2.3.0 — Multi-material costing and printing
 
 - Split Save button: Save Quote is default when Quotes are enabled; otherwise Save Calculation. History remains separate.

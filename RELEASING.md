@@ -48,3 +48,7 @@ CI verifies compilation and packaging, **not** complete application correctness.
 ### Already published a release manually?
 
 The workflow now checks whether the release exists and uploads assets with `--clobber` if it does. A tag always runs the workflow code from its tagged commit, so a fix committed after an older tag cannot repair a rerun of that older tag. Publish a new tag containing the fix.
+
+### Frontend image dependency installation
+
+The root `package.json` has a `postinstall` hook to install API dependencies for local development. The frontend Dockerfile intentionally runs `npm install --ignore-scripts` so it does not need backend files during the frontend dependency layer. Do not remove this flag unless the Docker build order and lifecycle scripts are redesigned together.

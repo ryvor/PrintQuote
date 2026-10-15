@@ -145,3 +145,7 @@ This infrastructure does **not** change the in-app local-release updater. No Git
 ### v2.4.3 release automation fix
 
 The release checks accept both `## 2.4.3` and `## [2.4.3]` changelog headings. If you already published a release manually, the tag workflow uploads assets to it rather than trying to create a duplicate. Existing tags point to immutable commits: to run the corrected workflow, publish a new version tag containing the fix rather than rerunning an older tag.
+
+### v2.4.4 Docker build fix
+
+The frontend Docker build installs only frontend dependencies with `npm install --ignore-scripts`. This prevents the root `postinstall` hook from trying to install backend dependencies before the `server/` directory has been copied. The API image installs its own dependencies in `server/Dockerfile`. Local `npm install` behaviour is unchanged.

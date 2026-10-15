@@ -12,7 +12,7 @@ test('release metadata matches and changelog entry exists', () => {
 test('release notes are generated from changelog', () => {
   const notes = execFileSync(process.execPath, ['scripts/release-notes.mjs'], { cwd: root, encoding: 'utf8' });
   assert.match(notes, /PrintQuote v/);
-  assert.match(notes, /CI & Release Hotfix/);
+  assert.match(notes, /Docker Frontend Build Hotfix/);
 });
 test('Docker release compose uses published images and persistent SQLite bind mount', () => {
   const compose = fs.readFileSync(path.join(root, 'docker-compose.release.yml'), 'utf8');

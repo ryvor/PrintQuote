@@ -46,3 +46,7 @@ This is a proposed development plan, not a commitment or a list of already imple
 - Fully offline-capable personal edition, separate from shared Docker deployment.
 
 Roadmap entries are proposals and can be reprioritized based on user feedback.
+
+### Release infrastructure maintenance
+
+- **v2.4.4 (completed):** Repair frontend Docker image dependency installation in CI.

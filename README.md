@@ -61,3 +61,10 @@ Everything is saved in browser `localStorage` under `printquote-v1`. This is per
 ## Disclaimer
 
 This is an independent project and is not affiliated with czajo/3dprintcalculator. The included printer and filament records are illustrative estimates; replace them with your actual prices and measured printer power usage.
+
+
+## Blueprint Studio appearance (v1.1)
+
+Settings → Appearance & branding lets you customise the site title, subtitle, logo, accent colour, canvas colour, grid visibility and spacing. The logo is saved in localStorage (max 1 MB), along with the rest of your data.
+
+The Vite Vue plugin is configured in `vite.config.js`, and the icon dependency is now `@lucide/vue`.

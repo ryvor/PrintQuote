@@ -1,0 +1,12 @@
+services:
+  printquote:
+    build: .
+    container_name: printquote
+    restart: unless-stopped
+    ports:
+      - "8899:80"
+    networks:
+      - 1panel-network
+networks:
+  1panel-network:
+    external: true

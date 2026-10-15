@@ -67,3 +67,15 @@ This release adds optional **physical spool inventory** (with manual stock movem
 To get started: enable Inventory, Advanced Costing and Forecasting in Settings; add filament/printer profiles, add physical spools in Spool Inventory, and edit a product to add variants and component costs. Spool movements are intentionally manual: a sale does not necessarily correspond to a completed print.
 
 **Scope and limitations:** This is an incremental v2.0, not a completed migration to a relational multi-tenant system. Existing app data remains a JSON document inside SQLite or Cloudflare D1, and all users share one workspace. Existing login and role behaviour remains as in v1.11. The existing default admin/admin account is insecure for public use and must be changed. Advanced forecasting, multi-workspace isolation, audited permissions, secure cookie sessions, and automated stock consumption require further work. Back up your existing database before upgrading. No existing product data is deleted; products without variants continue to use their original costing fields.
+
+## v2.1 — Advanced workshop features
+
+- **Inventory:** When recording a sale, optionally select a matching physical spool and deduct the variant's estimated filament usage. Stock is not deducted unless explicitly selected. Movements are recorded with a reason. Check quantities before saving; a sale and deduction are stored in the same shared workspace update.
+- **Advanced costing:** Product variants retain their own print requirements, packaging, maintenance and additional bill-of-materials component costs. Live estimates reflect current material and electricity prices; recorded sales retain historical cost snapshots.
+- **Analytics:** The dashboard now includes gross margin, average recorded sale, revenue concentration and the most profitable products, filtered by the existing date selector.
+- **Forecasting:** A weighted three-month demand estimate with a rough variability range and a clearly labelled confidence indicator. It is a planning heuristic, **not** a statistically calibrated prediction interval or an external market forecast.
+- **Collaboration:** Admins can assign Viewer, Manager or Administrator roles. The Express and Cloudflare D1 APIs prevent Viewer accounts from saving workspace state. Admins can inspect a basic activity log of workspace saves and role changes.
+
+### Upgrade notes
+
+For Cloudflare D1, apply the additional `activity_log` table from `schema.sql` to an existing D1 database before deploying this version. Docker/Express creates the table automatically. Back up your database first. The application still stores the shared workspace as a JSON document in SQLite/D1; concurrent edits from multiple users can overwrite each other. Role permissions are enforced at API endpoints but per-record ownership, secure cookie sessions, granular audit diffs, and conflict-free collaboration are not yet implemented. Do not treat this as a fully hardened public multi-tenant system.

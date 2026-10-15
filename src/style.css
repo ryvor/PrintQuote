@@ -208,3 +208,9 @@
 
 /* v2 workshop modules */
 .variant-editor{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}.variant-row{padding:16px;border:1px solid var(--line);border-radius:14px;margin:12px 0;background:var(--card)}.variant-row h4{margin:14px 0 8px}.variant-row .field-grid{margin:10px 0}.variant-row .field-grid>input{min-width:0;width:100%;border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--input);color:var(--ink)}.stock-row{gap:12px;flex-wrap:wrap}.stock-row .hint{margin:3px 0}.dashboard-page .page-head{flex-wrap:wrap}.dashboard-page .page-head>.field{min-width:150px}.variant-editor .card-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}.modal:has(.variant-editor){max-height:90vh;overflow-y:auto}
+
+/* v2.1 advanced workshop */
+.v2-panel{margin:16px 0;padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+.v2-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:18px 0}
+.v2-metrics>div{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:12px;background:var(--hover-tint,var(--input))}
+.v2-metrics strong{font-size:1.45rem}.v2-checkbox{display:flex;align-items:center;gap:10px;padding:12px 0}.v2-checkbox input{width:18px;height:18px}

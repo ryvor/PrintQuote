@@ -11,7 +11,7 @@ export async function onRequest({request,env}){
   const saved=await db.prepare('SELECT id FROM app_state WHERE id=1').first();
   if(!saved)await db.prepare('INSERT INTO app_state VALUES (1,?,?)').bind(JSON.stringify(defaults),new Date().toISOString()).run();
   if(pathname==='/api/health')return response({ok:true,storage:'cloudflare-d1'});
-  const body=method==='POST'||method==='PUT'?await request.json().catch(()=>({})):{};
+  const body=['POST','PUT','PATCH'].includes(method)?await request.json().catch(()=>({})):{};
   if(pathname==='/api/auth/login'&&method==='POST'){
    const u=await db.prepare('SELECT * FROM users WHERE username=?').bind(String(body.username||'')).first();
    if(!u||!await verifyPassword(String(body.password||''),u.password_hash))return response({error:'Invalid username or password'},401);
@@ -31,16 +31,20 @@ export async function onRequest({request,env}){
   }
   if(pathname==='/api/state'&&method==='GET'){const row=await db.prepare('SELECT data FROM app_state WHERE id=1').first();return response(JSON.parse(row.data))}
   if(pathname==='/api/state'&&method==='PUT'){
+   if(!['admin','manager'].includes(user.role))return response({error:'Read-only account'},403);
    if(!body||!Array.isArray(body.filaments)||!Array.isArray(body.printers)||!Array.isArray(body.quotes)||!body.settings||typeof body.settings!=='object'||Array.isArray(body.settings))return response({error:'Invalid workspace data'},400);
-   await db.prepare('UPDATE app_state SET data=?,updated_at=? WHERE id=1').bind(JSON.stringify(body),new Date().toISOString()).run();return response({ok:true});
+   await db.prepare('UPDATE app_state SET data=?,updated_at=? WHERE id=1').bind(JSON.stringify(body),new Date().toISOString()).run();await db.prepare('INSERT INTO activity_log(actor,action,created_at) VALUES(?,?,?)').bind(user.username,'Updated workspace',new Date().toISOString()).run();return response({ok:true});
   }
   if(pathname.startsWith('/api/admin/')){
    if(user.role!=='admin')return response({error:'Administrator access required'},403);
+   if(pathname==='/api/admin/activity'&&method==='GET'){const rows=await db.prepare('SELECT * FROM activity_log ORDER BY id DESC LIMIT 100').all();return response({events:rows.results})}
+   const roleMatch=pathname.match(/^\/api\/admin\/users\/([a-z0-9]+)\/role$/);
+   if(roleMatch&&method==='PATCH'){if(roleMatch[1]===user.id)return response({error:'Cannot change your own role'},400);if(!['admin','manager','viewer'].includes(body.role))return response({error:'Invalid role'},400);await db.prepare('UPDATE users SET role=? WHERE id=?').bind(body.role,roleMatch[1]).run();await db.prepare('INSERT INTO activity_log(actor,action,created_at) VALUES(?,?,?)').bind(user.username,'Changed role to '+body.role,new Date().toISOString()).run();return response({ok:true})}
    if(pathname==='/api/admin/users'&&method==='GET'){const result=await db.prepare('SELECT * FROM users ORDER BY username').all();return response({users:result.results.map(publicUser)})}
    if(pathname==='/api/admin/users'&&method==='POST'){
     const error=validateUser(body);if(error)return response({error},400);
     if(await db.prepare('SELECT id FROM users WHERE username=?').bind(body.username).first())return response({error:'Username already exists'},409);
-    await db.prepare('INSERT INTO users VALUES (?,?,?,?,?,?,?)').bind(randomToken().slice(0,24),body.username,body.firstName.trim(),body.lastName.trim(),'user',await hashPassword(body.password),0).run();return response({ok:true},201);
+    await db.prepare('INSERT INTO users VALUES (?,?,?,?,?,?,?)').bind(randomToken().slice(0,24),body.username,body.firstName.trim(),body.lastName.trim(),['viewer','manager','admin'].includes(body.role)?body.role:'viewer',await hashPassword(body.password),0).run();return response({ok:true},201);
    }
    const match=pathname.match(/^\/api\/admin\/users\/([a-z0-9]+)$/);
    if(match&&method==='DELETE'){

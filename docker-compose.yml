@@ -3,10 +3,39 @@ services:
     build: .
     container_name: printquote
     restart: unless-stopped
+    depends_on:
+      printquote-api:
+        condition: service_started
     ports:
       - "8899:80"
-    networks:
-      - 1panel-network
+    networks: [1panel-network]
+  printquote-api:
+    build: ./server
+    container_name: printquote-api
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgres://printquote:${DB_PASSWORD:?Set DB_PASSWORD in .env}@printquote-db:5432/printquote
+    depends_on:
+      printquote-db:
+        condition: service_healthy
+    networks: [1panel-network]
+  printquote-db:
+    image: postgres:16-alpine
+    container_name: printquote-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: printquote
+      POSTGRES_USER: printquote
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - /opt/PrintQuote/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U printquote -d printquote"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    networks: [1panel-network]
 networks:
   1panel-network:
     external: true

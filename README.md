@@ -92,3 +92,9 @@ With auto-update enabled, the **host-side** `scripts/apply-scheduled.mjs` runner
 Every signed-in user checks the running application version once a minute and receives a refresh prompt when it changes. This uses browser-local last-seen version tracking. Existing users already on a different version when first opening a browser will not receive a retroactive notification.
 
 **Caution:** Automatic deployments are not a substitute for testing releases. Database schema downgrades are not guaranteed to work. This application uses a file-exporting `sql.js` SQLite implementation; simultaneous database writes from the API and the host updater can race. Schedule updates during quiet periods and ensure a tested backup and restore procedure.
+
+## v2.2.3 — Login/startup hotfix
+
+Fixed initial administrator creation when the `users` table has an `email` column. The SQL statement now names the seven required columns explicitly, leaving `email` nullable. Previously, starting with an empty database could fail with `table users has 8 columns but 7 values were supplied`, preventing the API from starting and causing login requests to fail. Existing user accounts and data are not reset.
+
+For development, start with `npm run dev` and inspect the API terminal output. For Docker, rebuild using `docker compose up -d --build` and inspect `docker compose logs api` (service name may vary).

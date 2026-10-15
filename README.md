@@ -24,3 +24,8 @@ Open `http://192.168.1.20:8899`. Docker uses `1panel-network` and stores data at
 
 ### v1.8 — Slate-blue colour refresh
 Layered blue, slate and accent-tinted backgrounds, softly graded cards, richer active navigation, and lighter dark mode. Existing workspace colours remain configurable; use Settings → Reset colours to apply the new defaults to existing installations.
+
+### v1.8.2 colour audit
+- Unified hover and focus colours across navigation, Settings, controls, forms and add cards.
+- Active navigation stays accented on hover in light and dark mode.
+- Destructive hover stays red.

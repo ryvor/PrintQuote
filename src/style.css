@@ -178,3 +178,18 @@
 .shell .product-status{background:linear-gradient(100deg,#d7f5e8,#d7eff8)}
 .shell.dark-mode .product-status{background:#244e51;color:#9cf0d2}
 @media(prefers-reduced-motion:reduce){.shell .card,.shell .stat,.shell .table-card{transition:none!important}}
+
+/* v1.8.2: consistent interactive states in both themes */
+.shell{--hover-tint:color-mix(in srgb,var(--accent) 12%,#e7f2ff);--hover-border:color-mix(in srgb,var(--accent) 47%,#b5d4fa);--hover-ink:color-mix(in srgb,var(--accent) 80%,#1a5c9d)}
+.shell.dark-mode{--hover-tint:color-mix(in srgb,var(--accent) 21%,#273e5b);--hover-border:color-mix(in srgb,var(--accent) 55%,#54749c);--hover-ink:#d7e8ff}
+.shell .nav-link:not(.active):hover,.shell .nav-link:not(.active):focus-visible,.shell .sidebar-settings:not(.active):hover,.shell .sidebar-settings:not(.active):focus-visible{background:linear-gradient(110deg,var(--hover-tint),color-mix(in srgb,var(--hover-tint) 72%,transparent))!important;color:var(--hover-ink)!important}
+.shell .nav-link.active,.shell .nav-link.active:hover,.shell .nav-link.active:focus-visible,.shell .sidebar-settings.active,.shell .sidebar-settings.active:hover,.shell .sidebar-settings.active:focus-visible{background:linear-gradient(110deg,var(--accent),color-mix(in srgb,var(--accent) 74%,#75baff))!important;color:#fff!important;border-color:transparent!important;box-shadow:0 7px 20px color-mix(in srgb,var(--accent) 25%,transparent)!important}
+.shell .nav-link.active:hover,.shell .nav-link.active:focus-visible,.shell .sidebar-settings.active:hover,.shell .sidebar-settings.active:focus-visible{filter:brightness(1.10);box-shadow:0 9px 24px color-mix(in srgb,var(--accent) 37%,transparent)!important}
+.shell .btn:not(.primary):hover,.shell .btn:not(.primary):focus-visible,.shell .icon-button:not(.danger):hover,.shell .icon-button:not(.danger):focus-visible,.shell .theme-toggle:hover,.shell .theme-toggle:focus-visible,.shell .tour-replay:hover,.shell .tour-replay:focus-visible{background:var(--hover-tint)!important;border-color:var(--hover-border)!important;color:var(--hover-ink)!important}
+.shell .btn.primary:hover,.shell .btn.primary:focus-visible{background:linear-gradient(110deg,color-mix(in srgb,var(--accent) 91%,#fff),color-mix(in srgb,var(--accent) 69%,#74c6f9))!important;color:white!important;border-color:transparent!important;box-shadow:0 9px 23px color-mix(in srgb,var(--accent) 31%,transparent)!important}
+.shell .add-card:hover,.shell .add-card:focus-visible{background:linear-gradient(135deg,var(--hover-tint),color-mix(in srgb,var(--hover-tint) 50%,transparent))!important;border-color:var(--hover-border)!important;color:var(--hover-ink)!important}
+.shell .link:hover,.shell .link:focus-visible{color:var(--hover-ink);text-decoration:underline}
+.shell .field input:hover,.shell .field select:hover{border-color:var(--hover-border)}
+.shell .field input:focus,.shell .field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 19%,transparent)}
+.shell button:focus-visible,.shell a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media(prefers-reduced-motion:no-preference){.shell .nav-link,.shell .sidebar-settings,.shell .btn,.shell .icon-button,.shell .theme-toggle,.shell .tour-replay,.shell .add-card{transition:background .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease,filter .16s ease}}

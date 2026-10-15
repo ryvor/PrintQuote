@@ -40,3 +40,22 @@ Layered blue, slate and accent-tinted backgrounds, softly graded cards, richer a
 
 ## v1.10 Modular workspace
 Settings → Workspace features provides three presets and seven independent switches. Cost Calculator and Settings are always present. Disabling a page hides its navigation and associated actions without deleting saved data. Filament stock is optional and manually maintained (sales do not automatically deduct material). Feature preferences are persisted in the same shared SQLite state as other settings.
+
+## v1.11 authentication and Cloudflare Pages
+
+The app now requires login. The **initial** account is `admin` / `admin`. **Change it immediately** under the user menu → My account. The initial credentials are insecure and must never be left unchanged on a public deployment. The admin can create users in Account menu → Administration. Passwords require 6+ characters, a digit and a special character. User records and hashed passwords live in the server database, never in the shared workspace JSON. Session tokens are stored hashed on the server; Remember me stores the token in browser localStorage (30-day server expiry), otherwise sessionStorage (1-day server expiry, cleared on tab/browser session end). Users share one workspace; there is no per-user data isolation. User accounts do not appear in JSON exports.
+
+### Cloudflare Pages + D1
+
+**Cloudflare Pages cannot run the existing Express server or use the on-disk SQLite database.** This release includes a Pages Function API and a Cloudflare D1 (SQLite-compatible) backend, using the same frontend API routes. D1 is a different database: **data is not migrated automatically** from your Cerberus SQLite file.
+
+1. Install Wrangler: `npm install -D wrangler` (or use `npx wrangler`).
+2. Create a D1 database: `npx wrangler d1 create printquote`.
+3. Set `database_id` in `wrangler.toml` to the returned ID. Bind the D1 database as **DB** in your Cloudflare Pages project settings too, if configuring through the dashboard.
+4. Initialise D1: `npx wrangler d1 execute printquote --remote --file=./schema.sql`.
+5. Build: `npm install && npm run build`. Deploy the `dist` directory as a **Cloudflare Pages project**, including the repository's `functions/` folder (Git integration recommended). For local Pages testing: `npx wrangler pages dev dist --d1 DB=printquote` (refer to your Wrangler version's D1 local binding syntax).
+6. On first login, change the default password before publishing. Use HTTPS. To transfer existing data, export a JSON backup from your local installation and import it into the Pages deployment.
+
+The first request bootstraps `admin/admin` if the users table is empty. Cloudflare deployments should be access-restricted until this password is changed. The D1 binding and schema are required; static-only Pages deployment will not work.
+
+Security notes: This is starter authentication, not a hardened internet-facing identity provider. Before wider public deployment, add login rate limiting / Cloudflare WAF, enforce strong initial admin password via secret provisioning, use HTTP-only secure cookies instead of browser-stored bearer tokens, add audit logging and concurrent-write protection, and consider account recovery / MFA. Existing workspace state uses last-write-wins, so simultaneous edits from multiple users can overwrite each other.

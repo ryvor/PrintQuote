@@ -1,8 +1,9 @@
 FROM node:22-alpine
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --omit=dev
-COPY index.js ./
+COPY server/package*.json ./server/
+RUN cd server && npm install --omit=dev
+COPY server/index.js ./server/index.js
+COPY shared ./shared
 RUN mkdir -p /data
 EXPOSE 3001
-CMD ["node", "index.js"]
+CMD ["node", "server/index.js"]

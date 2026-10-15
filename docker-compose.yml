@@ -10,7 +10,9 @@ services:
     networks: [1panel-network]
 
   printquote-api:
-    build: ./server
+    build:
+      context: .
+      dockerfile: server/Dockerfile
     container_name: printquote-api
     restart: unless-stopped
     environment:

@@ -12,7 +12,8 @@ const defaults = {
   settings: {currency:'GBP',siteTitle:'PrintQuote',siteSubtitle:'PRINT COST STUDIO',logo:'',accent:'#6478f5',background:'#f7f8fb',darkBackground:'#11141c',themeMode:'auto',gridOpacity:0.2,gridSize:28,energyRate:0.28,labourRate:12,defaultMargin:30,onboardingCompleted:false},
   filaments:[],
   printers:[],
-  quotes:[]
+  quotes:[],
+  products:[]
 };
 
 const SQL = await initSqlJs();

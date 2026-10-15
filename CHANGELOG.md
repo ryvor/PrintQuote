@@ -1,5 +1,22 @@
 # Changelog
 
+## PrintQuote v2.4.0 — Print History & Cost Accuracy
+
+- Optional Print History module in workspace presets and sidebar.
+- Record successful or failed print runs from saved products and variants.
+- Capture actual per-filament grams, elapsed print time, quantity and notes.
+- Compare actual production costs against frozen estimated snapshots.
+- Optionally deduct **actual** filament usage from selected spools (including failed prints).
+- Display historical variance and wasted filament totals.
+- Restrict changes to Admin/User roles; Viewers can inspect records.
+- All records persist in the existing self-hosted SQLite workspace document.
+
+### Important
+
+- Database backup recommended before upgrade.
+- Historical stock deductions are not reversed when deleting a print record.
+- Cost calculations are estimates based on configured rates; no measured power consumption is collected.
+
 ## PrintQuote v2.3.1 — Natural Save Menu
 
 - Replace the separate action and chevron buttons with one unified dropdown button.

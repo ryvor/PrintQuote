@@ -79,3 +79,14 @@ To get started: enable Inventory, Advanced Costing and Forecasting in Settings; 
 ### Upgrade notes
 
 For Cloudflare D1, apply the additional `activity_log` table from `schema.sql` to an existing D1 database before deploying this version. Docker/Express creates the table automatically. Back up your database first. The application still stores the shared workspace as a JSON document in SQLite/D1; concurrent edits from multiple users can overwrite each other. Role permissions are enforced at API endpoints but per-record ownership, secure cookie sessions, granular audit diffs, and conflict-free collaboration are not yet implemented. Do not treat this as a fully hardened public multi-tenant system.
+
+
+## v2.1.1 Cloudflare Pages deployment correction
+
+The Vue build command is `npm run build`, output directory `dist`, root directory the folder containing `package.json`, and the deploy command for **Cloudflare Pages** is `npx wrangler pages deploy dist --project-name printquote` (or leave the deploy command blank for normal Git-connected Pages automatic deployment). **Do not use `npx wrangler deploy`**, which deploys Workers, not Pages. The `functions/` directory must be present at the project root for Pages Functions.
+
+Before deployment, create the D1 database and replace `REPLACE_WITH_YOUR_D1_DATABASE_ID` in `wrangler.toml` with its actual UUID. Initialise the schema with `npx wrangler d1 execute printquote --remote --file=./schema.sql`. For existing databases, applying the schema may require handling existing objects; back up first. Bind the D1 database as `DB` to the Pages project.
+
+If using Cloudflare's newer Workers build configuration rather than a Pages project, create/select a **Pages** project instead. The Wrangler Pages deployment command needs the Pages project to exist; if its name is different, change `--project-name` accordingly.
+
+**Note:** The build log ending at `wrangler 4.151.0` does not show the final failure; this change fixes the likely Pages/Workers command mismatch but cannot guarantee there are no later errors.

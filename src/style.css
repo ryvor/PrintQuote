@@ -81,3 +81,27 @@
  .mobile-toggle{display:grid;place-items:center;width:37px;height:37px;border-radius:9px;background:#f3f2ff;color:var(--accent)}
 }
 @media(max-width:600px){.shell .topbar{padding:0 14px}.shell .breadcrumb{font-size:12px}.shell .content{padding:22px 14px}.shell .avatar{display:none}.shell .theme-toggle{padding:9px}.shell .page-head{gap:16px}.shell .field-grid{grid-template-columns:1fr}.shell .stats-grid{grid-template-columns:1fr}.shell .printer-grid{grid-template-columns:1fr}.shell .modal{width:100%}}
+
+
+/* v1.5 — refined, minimal canvas: no blueprint grid */
+.shell, .shell.dark-mode {
+  background-image: radial-gradient(ellipse 65% 35% at 92% 0%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 80%),
+                    linear-gradient(180deg, color-mix(in srgb, var(--surface) 95%, white) 0%, var(--surface) 52%);
+  background-size: auto; background-attachment: fixed;
+}
+.shell.dark-mode {
+  background-image: radial-gradient(ellipse 70% 40% at 88% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 80%),
+                    linear-gradient(180deg, color-mix(in srgb, var(--surface) 93%, #29344a), var(--surface) 55%);
+}
+.shell .card, .shell .stat, .shell .table-card {
+  border-radius: 18px; box-shadow: 0 3px 16px rgba(26, 35, 64, .035), 0 18px 50px rgba(26, 35, 64, .025);
+}
+.shell.dark-mode .card, .shell.dark-mode .stat, .shell.dark-mode .table-card {
+  box-shadow: 0 6px 28px rgba(0, 0, 0, .11);
+}
+.shell .sidebar { box-shadow: 1px 0 18px rgba(30, 40, 70, .025); }
+.shell .nav-link.active { background: var(--accent) !important; box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 16%, transparent); }
+.shell .sidebar-settings.active { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); }
+.shell .topbar { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.appearance-note { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 2px 0 18px; }
+@media (prefers-reduced-motion: reduce) { .shell *, .shell *::before, .shell *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } }

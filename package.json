@@ -1,12 +1,15 @@
 {
   "name": "printquote-vue",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "node scripts/dev.mjs",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "vite preview --host 0.0.0.0",
+    "dev:frontend": "vite --host 0.0.0.0",
+    "dev:api": "npm --prefix server start",
+    "postinstall": "npm install --prefix server --no-audit --no-fund"
   },
   "dependencies": {
     "vue": "^3.5.13",

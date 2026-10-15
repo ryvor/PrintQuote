@@ -1,24 +1,23 @@
-# PrintQuote Blueprint v1.4 — Embedded SQLite
+# PrintQuote v1.5 — Minimal UI + embedded SQLite
 
-Responsive Vue 3 print cost calculator with blueprint styling, custom branding, Light/Dark/Auto themes, and **one shared SQLite database file**. No separate database service is needed.
+Vue 3 print cost calculator with light/dark/auto themes, custom branding, responsive sidebar, and shared SQLite data.
 
-## Cerberus / 1Panel deployment
+## Local development on Hydra
 
-1. Ensure the external Docker network `1panel-network` exists.
-2. Create the persistent data directory: `sudo mkdir -p /opt/PrintQuote/data`.
-3. From this directory run `docker compose up -d --build`.
-4. Visit `http://192.168.1.20:8899` (substitute your host IP).
+```bash
+npm install
+npm run dev
+```
 
-The Compose stack runs **two containers**: `printquote` (Vue served by Nginx) and `printquote-api` (Express + embedded SQLite). Data persists in `/opt/PrintQuote/data/printquote.sqlite` on the host. Back up this file with the app stopped, or export a JSON backup from Settings. Do not mount this file into multiple running API instances.
+`npm install` installs both frontend and server dependencies. `npm run dev` now starts **both** the API on port 3001 and Vite on port 5173, fixing the previous `/api/state ECONNREFUSED` error. The local development database is stored at `server/printquote-dev.sqlite` and is separate from the Docker database.
 
-## Local development
+## Docker / 1Panel on Cerberus
 
-Run `npm install && npm run dev` in the root. Run `npm install && SQLITE_PATH=./printquote.sqlite npm start` inside `server/` in another terminal. Vite proxies `/api` to port 3001.
+```bash
+sudo mkdir -p /opt/PrintQuote/data
+docker compose up -d --build
+```
 
-## Migrating from PrintQuote v1.2/v1.3 PostgreSQL
+Open `http://192.168.1.20:8899`. Docker uses `1panel-network` and stores data at `/opt/PrintQuote/data/printquote.sqlite`. Keep the existing data directory when upgrading.
 
-**Do not delete your existing PostgreSQL data until migration is complete.** In your old PrintQuote, go to Settings → Your data → Export backup to download a JSON file. Stop the old stack (`docker compose down`, without `-v`), deploy this new stack, then Settings → Import backup and select the JSON file. Verify your filament library, printer profiles, quotes, and branding are present. Keep the old PostgreSQL volume until satisfied.
-
-## Limitations and security
-
-The application has a single shared workspace, with last-write-wins saves. Multiple browsers see the same data on reload, but simultaneous edits can overwrite one another. The API has **no login**; use on a trusted LAN or Tailscale network, not exposed publicly. The SQLite database uses `sql.js` (SQLite compiled to WebAssembly), saving its database image atomically after changes; suitable for a small personal workspace, not high-write multi-user deployments.
+**Security:** There is no authentication. Keep the application on your private LAN or Tailscale network; do not expose it publicly. Export backups in Settings or back up the SQLite file while the API is stopped.

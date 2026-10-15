@@ -9,7 +9,7 @@ app.use(express.json({ limit: '3mb' }));
 
 const dbPath = process.env.SQLITE_PATH || '/data/printquote.sqlite';
 const defaults = {
-  settings: {currency:'GBP',siteTitle:'PrintQuote',siteSubtitle:'PRINT COST STUDIO',logo:'',accent:'#6478f5',background:'#f7f9ff',darkBackground:'#101827',themeMode:'auto',gridOpacity:0.2,gridSize:28,energyRate:0.28,labourRate:12,defaultMargin:30},
+  settings: {currency:'GBP',siteTitle:'PrintQuote',siteSubtitle:'PRINT COST STUDIO',logo:'',accent:'#6478f5',background:'#f7f8fb',darkBackground:'#11141c',themeMode:'auto',gridOpacity:0.2,gridSize:28,energyRate:0.28,labourRate:12,defaultMargin:30},
   filaments:[{id:'f1',name:'PLA Basic',brand:'Generic',material:'PLA',colour:'Slate Grey',price:18.99,url:''},{id:'f2',name:'PETG',brand:'Generic',material:'PETG',colour:'Black',price:22.5,url:''}],
   printers:[{id:'p1',name:'Bambu Lab P1S',technology:'FDM',power:120,setupMinutes:5,postMinutes:10,overheadRate:0.3}],
   quotes:[]

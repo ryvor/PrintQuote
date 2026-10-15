@@ -81,3 +81,14 @@ Administrators can edit usernames, names, email addresses and roles. All account
 Copy `.env.example` to `.env`, configure SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASSWORD, SMTP_FROM and restart `docker compose up -d --build`. Never commit `.env` to Git. The default admin has no email; set it in Administration before using email password reset.
 
 **Security note:** Emailing temporary passwords is less secure than sending a short-lived, single-use password setup link. The temporary password should be changed immediately. Mail delivery is required for changes; if SMTP fails the change is not saved. If mail succeeds but a subsequent database write fails, contact your administrator.
+
+
+## v2.2.2 — Update preferences and automatic deployments
+
+Administration → Versions & updates now supports Major (default), Minor and Patch update levels, plus an **Automatic updates** toggle (off by default). The selected level is exact: Major requires the first version number to increase; Minor requires the same major and a higher minor; Patch requires the same major/minor and a higher patch. Only higher versions in the trusted local releases directory are eligible. Manual scheduled downgrades remain possible.
+
+With auto-update enabled, the **host-side** `scripts/apply-scheduled.mjs` runner chooses the newest eligible installed release when it runs. Set it up as a host cron job (e.g. every 10 minutes) with `PRINTQUOTE_ROOT=/opt/PrintQuote`; Node and `sql.js` must be available on the host. The runner requires permission to run Docker Compose. It creates a database backup before deploying and records completed deployments. For existing installations, set `PRINTQUOTE_CURRENT_VERSION=2.2.2` on the runner's first invocation if `/opt/PrintQuote/current-version` does not exist. After a successful deployment, it updates that file automatically.
+
+Every signed-in user checks the running application version once a minute and receives a refresh prompt when it changes. This uses browser-local last-seen version tracking. Existing users already on a different version when first opening a browser will not receive a retroactive notification.
+
+**Caution:** Automatic deployments are not a substitute for testing releases. Database schema downgrades are not guaranteed to work. This application uses a file-exporting `sql.js` SQLite implementation; simultaneous database writes from the API and the host updater can race. Schedule updates during quiet periods and ensure a tested backup and restore procedure.

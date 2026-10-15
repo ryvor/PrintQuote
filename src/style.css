@@ -286,3 +286,6 @@
 
 /* v2.2 release administration */
 .version-entry{margin:12px 0;border:1px solid var(--line);border-radius:12px;padding:12px}.version-entry summary{cursor:pointer}.release-readme{white-space:pre-wrap;overflow-wrap:anywhere;max-height:360px;overflow:auto;font:12px/1.6 ui-monospace,monospace;padding:14px;background:var(--card);border-radius:8px}.release-overlay{position:fixed;inset:0;background:#071629a8;z-index:1000;display:grid;place-items:center;padding:20px}.release-modal{max-width:440px;width:100%;background:var(--card,#fff);color:var(--ink,#17243a);border-radius:20px;padding:28px;box-shadow:0 22px 60px #0004}.release-modal .btn{margin:6px 8px 0 0}
+
+/* v2.2.2 release preferences */
+.update-prefs{padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:16px}.update-prefs label{display:flex;flex-direction:column;gap:8px;margin:14px 0;font-weight:600}.update-prefs select{max-width:420px;padding:10px;border-radius:10px;background:var(--card);color:var(--ink);border:1px solid var(--line)}.update-prefs .update-check{flex-direction:row;align-items:center;font-weight:500}.update-check input{width:18px;height:18px;accent-color:var(--accent)}

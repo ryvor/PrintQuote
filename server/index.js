@@ -18,6 +18,7 @@ for(const stmt of [
  'CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, expires_at TEXT NOT NULL)',
  'CREATE TABLE IF NOT EXISTS release_schedule (id INTEGER PRIMARY KEY AUTOINCREMENT, version TEXT NOT NULL, execute_at TEXT NOT NULL, status TEXT NOT NULL DEFAULT "pending", requested_by TEXT NOT NULL, created_at TEXT NOT NULL, error TEXT)',
  'CREATE TABLE IF NOT EXISTS update_notices (user_id TEXT NOT NULL, version TEXT NOT NULL, dismissed_at TEXT NOT NULL, PRIMARY KEY(user_id,version))',
+ 'CREATE TABLE IF NOT EXISTS update_preferences (id INTEGER PRIMARY KEY CHECK(id=1), reminder_level TEXT NOT NULL DEFAULT "major", auto_update INTEGER NOT NULL DEFAULT 0)',
  'CREATE TABLE IF NOT EXISTS activity_log (id INTEGER PRIMARY KEY AUTOINCREMENT, actor TEXT NOT NULL, action TEXT NOT NULL, created_at TEXT NOT NULL)'])db.run(stmt);
 const columns=allColumns();
 function allColumns(){return db.exec('PRAGMA table_info(users)')[0]?.values.map(row=>row[1])||[]}
@@ -65,7 +66,7 @@ app.get('/api/admin/activity',authenticate,adminOnly,(_req,res)=>res.json({event
 app.delete('/api/admin/users/:id',authenticate,adminOnly,(req,res)=>{if(req.params.id===req.user.id)return res.status(400).json({error:'Cannot delete your own account'});if(!one('SELECT id FROM users WHERE id=?',[req.params.id]))return res.status(404).json({error:'User not found'});run('DELETE FROM sessions WHERE user_id=?',[req.params.id]);run('DELETE FROM users WHERE id=?',[req.params.id]);res.json({ok:true})});
 // Releases are operator-installed directories, never arbitrary URLs or uploaded scripts.
 const releaseRoot=process.env.RELEASE_ROOT||'/releases';
-const appVersion='2.2.1';
+const appVersion='2.2.2';
 function versions(){
   try{return fs.readdirSync(releaseRoot,{withFileTypes:true}).filter(x=>x.isDirectory()&&/^v\d+\.\d+\.\d+$/.test(x.name)).map(x=>{
     const dir=path.join(releaseRoot,x.name);
@@ -74,10 +75,22 @@ function versions(){
     return {version:x.name.slice(1),readme:fs.readFileSync(file,'utf8').slice(0,60000)};
   }).filter(Boolean).sort((a,b)=>b.version.localeCompare(a.version,undefined,{numeric:true}))}catch{return []}
 }
+// Shared deployment preferences are administrator-controlled and persisted in SQLite.
+if(!one('SELECT id FROM update_preferences WHERE id=1'))run('INSERT INTO update_preferences(id,reminder_level,auto_update) VALUES (1,?,0)',['major']);
+function semver(v){const m=/^(\d+)\.(\d+)\.(\d+)$/.exec(String(v));return m?m.slice(1).map(Number):null}
+function compareVersions(a,b){const x=semver(a),y=semver(b);if(!x||!y)return 0;for(let i=0;i<3;i++)if(x[i]!==y[i])return x[i]-y[i];return 0}
+function eligibleVersion(candidate,current,level){const a=semver(candidate),b=semver(current);if(!a||!b||compareVersions(candidate,current)<=0)return false;const part={major:0,minor:1,patch:2}[level]??0;return a[part]>b[part]&&a.slice(0,part).every((n,i)=>n===b[i])}
+app.get('/api/version',authenticate,(req,res)=>res.json({current:appVersion,updatedAt:one('SELECT created_at FROM release_schedule WHERE status=? AND version=? ORDER BY id DESC LIMIT 1',['completed',appVersion])?.created_at||null}));
+app.patch('/api/admin/update-preferences',authenticate,adminOnly,(req,res)=>{
+ const level=String(req.body?.reminderLevel||'');const auto=req.body?.autoUpdate;
+ if(!['major','minor','patch'].includes(level)||typeof auto!=='boolean')return res.status(400).json({error:'Choose a valid reminder level and automatic update setting'});
+ run('UPDATE update_preferences SET reminder_level=?,auto_update=? WHERE id=1',[level,auto?1:0]);logActivity(req.user.username,'Updated release preferences');res.json({ok:true,reminderLevel:level,autoUpdate:auto});
+});
 app.get('/api/admin/releases',authenticate,adminOnly,(req,res)=>{
  const list=versions(),latest=list[0]?.version||appVersion;
- const dismissed=!!one('SELECT user_id FROM update_notices WHERE user_id=? AND version=?',[req.user.id,latest]);
- res.json({current:appVersion,releases:list,schedules:all('SELECT * FROM release_schedule ORDER BY id DESC LIMIT 30'),latest,showNotice:latest!==appVersion&&!dismissed});
+ const prefs=one('SELECT * FROM update_preferences WHERE id=1'),candidate=list.find(v=>eligibleVersion(v.version,appVersion,prefs.reminder_level))?.version||null;
+ const dismissed=candidate&&!!one('SELECT user_id FROM update_notices WHERE user_id=? AND version=?',[req.user.id,candidate]);
+ res.json({current:appVersion,releases:list,schedules:all('SELECT * FROM release_schedule ORDER BY id DESC LIMIT 30'),latest:candidate,showNotice:!!candidate&&!dismissed&&!prefs.auto_update,reminderLevel:prefs.reminder_level,autoUpdate:!!prefs.auto_update});
 });
 app.post('/api/admin/releases/dismiss',authenticate,adminOnly,(req,res)=>{
  const version=String(req.body?.version||'');if(!versions().some(v=>v.version===version))return res.status(400).json({error:'Unknown release'});

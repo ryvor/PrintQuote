@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { LayoutDashboard, Calculator, Layers3, Printer, Settings2, Plus, Trash2, ExternalLink, Download, Upload, Box, Zap, Clock3, TrendingUp, PoundSterling, ChevronRight, Info, Check, X } from '@lucide/vue'
+import { LayoutDashboard, Calculator, Layers3, Printer, Settings2, Plus, Trash2, ExternalLink, Download, Upload, Box, Zap, Clock3, TrendingUp, PoundSterling, ChevronRight, Info, Check, X } from 'lucide-vue-next'
 const KEY = 'printquote-v1'
 const initial = { settings:{currency:'GBP',siteTitle:'PrintQuote',siteSubtitle:'PRINT COST STUDIO',logo:'',accent:'#2d9cdb',background:'#f6f9fc',gridOpacity:0.34,gridSize:28,energyRate:0.28,labourRate:12,defaultMargin:30}, filaments:[{id:'f1',name:'PLA Basic',brand:'Generic',material:'PLA',colour:'Slate Grey',price:18.99,url:''},{id:'f2',name:'PETG',brand:'Generic',material:'PETG',colour:'Black',price:22.5,url:''},{id:'f3',name:'TPU Flexible',brand:'Generic',material:'TPU',colour:'Black',price:29.99,url:''}], printers:[{id:'p1',name:'Bambu Lab A1',technology:'FDM',power:95,setupMinutes:10,postMinutes:10,overheadRate:0.25},{id:'p2',name:'Prusa MK4',technology:'FDM',power:110,setupMinutes:10,postMinutes:15,overheadRate:0.35}], quotes:[] }
 function clone(x){return JSON.parse(JSON.stringify(x))}

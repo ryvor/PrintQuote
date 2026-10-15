@@ -13,7 +13,8 @@ const defaults = {
   filaments:[],
   printers:[],
   quotes:[],
-  products:[]
+  products:[],
+  sales:[]
 };
 
 const SQL = await initSqlJs();

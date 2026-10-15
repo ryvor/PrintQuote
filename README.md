@@ -29,3 +29,11 @@ Layered blue, slate and accent-tinted backgrounds, softly graded cards, richer a
 - Unified hover and focus colours across navigation, Settings, controls, forms and add cards.
 - Active navigation stays accented on hover in light and dark mode.
 - Destructive hover stays red.
+
+## v1.9 — costing, products, and sales
+- Dashboard with recorded revenue, estimated gross profit, six-month chart, best-selling products and recent sales.
+- Calculator: Save quote primary button + dropdown to save a product; add saved products as quote line items.
+- Products: live unit cost and gross margin from current filament, printer and business rates; load into calculator, add to quote, or record a sale.
+- Saved quotes and recorded sales keep price/cost snapshots. Product costs are live, while their manually entered selling prices remain fixed.
+- Sales forecast is a **simple heuristic** based on recorded monthly unit volume, not an external market forecast. Requires data in two previous months.
+- Existing databases automatically acquire an empty `sales` array. Back up your SQLite file before upgrading.

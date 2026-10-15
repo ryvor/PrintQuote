@@ -37,3 +37,6 @@ Layered blue, slate and accent-tinted backgrounds, softly graded cards, richer a
 - Saved quotes and recorded sales keep price/cost snapshots. Product costs are live, while their manually entered selling prices remain fixed.
 - Sales forecast is a **simple heuristic** based on recorded monthly unit volume, not an external market forecast. Requires data in two previous months.
 - Existing databases automatically acquire an empty `sales` array. Back up your SQLite file before upgrading.
+
+## v1.10 Modular workspace
+Settings → Workspace features provides three presets and seven independent switches. Cost Calculator and Settings are always present. Disabling a page hides its navigation and associated actions without deleting saved data. Filament stock is optional and manually maintained (sales do not automatically deduct material). Feature preferences are persisted in the same shared SQLite state as other settings.

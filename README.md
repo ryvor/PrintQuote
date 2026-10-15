@@ -1,4 +1,27 @@
-# PrintQuote v2.4.1 — Self-hosted Docker + SQLite
+# PrintQuote — Self-hosted 3D Printing Costing & Workshop Management
+
+![Release workflow](https://img.shields.io/badge/release-tag--driven-blue)
+
+PrintQuote helps makers and small workshops calculate printing costs, manage multi-material products and filament inventory, record real print consumption, and understand profitability. Modules can be disabled to keep the interface as simple as a standalone calculator.
+
+**Deployment:** Self-hosted Docker Compose, with an internal SQLite database. No cloud database or external service is required.
+
+**Quick links:** [Releases](https://github.com/ryvor/PrintQuote/releases) · [Changelog](CHANGELOG.md) · [Roadmap](ROADMAP.md) · [Release instructions](RELEASING.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
+
+> **Security:** Change the initial administrator password immediately. This release is not yet hardened for direct public exposure.
+
+## Install from published Docker images
+
+After the first v2.4.2 release is published, use the provided `docker-compose.release.yml` and `.env` with `PRINTQUOTE_VERSION=v2.4.2`:
+
+```sh
+sudo mkdir -p /opt/PrintQuote/data /opt/PrintQuote/releases
+docker compose -f docker-compose.release.yml pull
+docker compose -f docker-compose.release.yml up -d
+```
+
+Open `http://YOUR-SERVER-IP:8899`. For building from source, see below.
+
 
 PrintQuote is a modular 3D-printing cost, product, inventory and sales analytics application. This edition is designed **only for self-hosting with Docker**. It does not require Cloudflare Pages, D1, Postgres, or any external database service.
 
@@ -111,3 +134,9 @@ On **Printer profiles**, each printer shows an accuracy panel after at least **f
 Administrators and Users can optionally enable **Apply learned corrections to future cost estimates** on each printer. This adjusts estimated material cost and time-based electricity/machine overhead for new calculations and product costing, using observed ratios capped between 0.5× and 1.5×. It does not change recorded history or inventory. Viewer accounts can read accuracy information but cannot change the setting. The algorithm is an aggregate historical heuristic, not AI or a guarantee of future performance.
 
 **Documentation:** [CHANGELOG.md](CHANGELOG.md) contains all consolidated release notes. [ROADMAP.md](ROADMAP.md) describes proposed releases through v4.0 and future ideas. Update both documents and this README with every release.
+
+## Release automation (v2.4.2)
+
+The `.github/workflows/ci.yml` workflow checks release metadata, runs the initial test suite, builds the Vue frontend, validates Docker Compose and builds both Docker images. Pushing a matching `vX.Y.Z` tag triggers `.github/workflows/release.yml`, which publishes source archives, GitHub release notes from `CHANGELOG.md`, and versioned GHCR images. See [RELEASING.md](RELEASING.md) for the operator checklist.
+
+This infrastructure does **not** change the in-app local-release updater. No GitHub release is published automatically until you push a version tag.

@@ -1,5 +1,13 @@
 .env
 node_modules/
-/.vite
+server/node_modules/
+dist/
 *.sqlite
+*.sqlite-*
+*.db
+*.db-*
+*.log
+.DS_Store
+artifacts/
+.vite
 package-lock.json

@@ -1,9 +1,0 @@
-name = "printquote"
-compatibility_date = "2026-10-01"
-pages_build_output_dir = "dist"
-
-# Create a D1 database, then replace the placeholder ID below.
-[[d1_databases]]
-binding = "DB"
-database_name = "printquote"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"

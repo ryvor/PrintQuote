@@ -1,0 +1,37 @@
+name: CI
+on:
+  push:
+    branches: [Release, Development]
+  pull_request:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install frontend and API dependencies
+        run: npm install --no-audit --no-fund
+      - name: Check release metadata
+        run: npm run check:release
+      - name: Unit tests
+        run: npm test
+      - name: Validate server syntax
+        run: |
+          node --check server/index.js
+          node --check shared/auth.js
+          node --check scripts/apply-scheduled.mjs
+      - name: Build frontend
+        run: npm run build
+      - name: Validate Docker Compose
+        run: |
+          docker compose -f docker-compose.yml config -q
+          docker compose -f docker-compose.release.yml config -q
+      - name: Build Docker images
+        run: |
+          docker build -t printquote-web:ci -f Dockerfile .
+          docker build -t printquote-api:ci -f server/Dockerfile .

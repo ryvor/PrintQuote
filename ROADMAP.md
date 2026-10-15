@@ -2,12 +2,14 @@
 
 This is a proposed development plan, not a commitment or a list of already implemented features. Features remain modular so calculator-only installations stay lightweight.
 
-## Detailed milestones — v2.4.2 through v3.0
+**Completed:** v2.4.2 Release Infrastructure — CI, tag-based releases, GHCR Docker images, release documentation.
+
+## Detailed milestones — v2.4.3 through v3.0
 
 | Version | Milestone | Acceptance criteria |
-| --- | --- | --- |
-| **2.4.2** | Accuracy insights | Date-range and minimum-sample filters; per-printer accuracy trend; warnings for sparse/outlier-heavy data. |
-| **2.4.3** | Print record corrections | Edit mistakes safely; reversible inventory movements; audit trail for stock changes. |
+|---|---|---|
+| **2.4.3** | Accuracy insights | Date-range and minimum-sample filters; per-printer accuracy trend; warnings for sparse/outlier-heavy data. |
+| **2.4.4** | Print record corrections | Edit mistakes safely; reversible inventory movements; audit trail for stock changes. |
 | **2.5.0** | Relational SQLite migration | Versioned migrations for products, variants, filaments, spools, sales and print runs; safe upgrade from JSON workspace. |
 | **2.5.1** | Concurrency safety | Transactions and optimistic concurrency checks; no silent overwrites across simultaneous users. |
 | **2.5.2** | Data recovery | In-app backup validation, restore preview and recovery documentation. |

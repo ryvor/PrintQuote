@@ -8,6 +8,7 @@ dist/
 *.db-*
 *.log
 .DS_Store
+RELEASE_NOTES.md
 artifacts/
 .vite
 package-lock.json

@@ -1,8 +1,8 @@
 # Prebuilt images published by the tag-triggered GitHub Actions workflow.
-# Set PRINTQUOTE_VERSION=v2.4.2 (or another published tag) in .env.
+# Set PRINTQUOTE_VERSION=v2.4.3 (or another published tag) in .env.
 services:
   printquote:
-    image: ghcr.io/ryvor/printquote-web:${PRINTQUOTE_VERSION:-v2.4.2}
+    image: ghcr.io/ryvor/printquote-web:${PRINTQUOTE_VERSION:-v2.4.3}
     container_name: printquote
     restart: unless-stopped
     depends_on:
@@ -10,7 +10,7 @@ services:
     ports:
       - "${PRINTQUOTE_PORT:-8899}:80"
   printquote-api:
-    image: ghcr.io/ryvor/printquote-api:${PRINTQUOTE_VERSION:-v2.4.2}
+    image: ghcr.io/ryvor/printquote-api:${PRINTQUOTE_VERSION:-v2.4.3}
     container_name: printquote-api
     restart: unless-stopped
     environment:

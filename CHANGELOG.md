@@ -2,7 +2,14 @@
 
 All notable changes to PrintQuote are collected here. Historical entries below are consolidated from prior release notes.
 
-## 2.4.2 — Release Infrastructure
+## v2.4.3 — CI & Release Hotfix
+
+- Accept both `## 2.4.3` and `## [2.4.3]` changelog headings in release validation and release-note generation.
+- Avoid failing the publication workflow when a GitHub Release was already created manually; upload release assets instead.
+- Add tests for both changelog formats and missing versions.
+- Keep the existing Docker/SQLite deployment unchanged.
+
+## v2.4.2 — Release Infrastructure
 
 - Add GitHub Actions CI for frontend compilation, Node tests, API syntax checks, Docker Compose validation and image builds.
 - Add tag-triggered GitHub Releases with source ZIP/tar.gz archives and notes generated from the consolidated changelog.
@@ -13,7 +20,7 @@ All notable changes to PrintQuote are collected here. Historical entries below a
 
 **Operator action:** Configure GitHub Actions permissions and select an explicit software licence before promoting the project as open source.
 
-## 2.4.1 — Printer Accuracy Profiles
+## v2.4.1 — Printer Accuracy Profiles
 
 - Aggregate successful print runs by printer, comparing actual versus baseline estimated filament grams and print duration.
 - Require at least five valid successful runs before showing learned recommendations; failed and incomplete runs are excluded.
@@ -24,7 +31,7 @@ All notable changes to PrintQuote are collected here. Historical entries below a
 
 **Note:** This is a simple aggregate heuristic, not predictive machine learning. Learned factors may be misleading when printer settings or materials vary.
 
-## 2.4.0 — Print History & Cost Accuracy
+## v2.4.0 — Print History & Cost Accuracy
 
 - Optional Print History module in workspace presets and sidebar.
 - Record successful or failed print runs from saved products and variants.
@@ -41,7 +48,7 @@ All notable changes to PrintQuote are collected here. Historical entries below a
 - Historical stock deductions are not reversed when deleting a print record.
 - Cost calculations are estimates based on configured rates; no measured power consumption is collected.
 
-## 2.3.1 — Natural Save Menu
+## v2.3.1 — Natural Save Menu
 
 - Replace the separate action and chevron buttons with one unified dropdown button.
 - Show the default action in the button label: Save quote when Quotes is enabled, otherwise Save calculation.
@@ -50,7 +57,7 @@ All notable changes to PrintQuote are collected here. Historical entries below a
 - Restore keyboard focus to the trigger after Escape.
 - Preserve History as a separate button.
 
-## 2.3.0 — Multi-material costing and printing
+## v2.3.0 — Multi-material costing and printing
 
 - Split Save button: Save Quote is default when Quotes are enabled; otherwise Save Calculation. History remains separate.
 - Cost Calculator supports multiple filament types/colours with per-material grams.
@@ -67,7 +74,7 @@ Configure PRINTER_CATALOG_URL in your Docker `.env` to point to a trusted JSON f
 
 Record Print is the operation that consumes spool stock; Record Sale does not. This prevents double deduction. Previous sale-linked deductions are retained as history and not retroactively changed. Stock is estimated from saved product/variant materials.
 
-## 2.2.7 — Viewer Role & Design Consistency
+## v2.2.7 — Viewer Role & Design Consistency
 
 - Administrators can create and edit Viewer accounts.
 - Viewers can browse enabled pages, read records, and run temporary calculator estimates, but cannot save workspace changes.
@@ -76,14 +83,14 @@ Record Print is the operation that consumes spool stock; Record Sale does not. T
 - Harmonised input, dropdown, slider, checkbox, focus, hover and button styling in light and dark modes.
 - No database schema migration required.
 
-## 2.2.6 — Ordered onboarding and administrator-only settings
+## v2.2.6 — Ordered onboarding and administrator-only settings
 
 - Tour now follows the actual sidebar order, respecting disabled modules and user role.
 - Settings link and page are visible only to administrators.
 - Backend rejects non-admin attempts to modify workspace settings.
 - No database migration required.
 
-## 2.2.5 — Calculation History
+## v2.2.5 — Calculation History
 
 - Save calculator estimates independently of Quotes and Products.
 - View searchable calculation history directly on the Cost Calculator page.

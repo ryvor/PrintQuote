@@ -44,3 +44,7 @@ Keep `/opt/PrintQuote/data` persistent and backed up. The image deployment path 
 ## Limits
 
 CI verifies compilation and packaging, **not** complete application correctness. End-to-end authentication, pricing, inventory and upgrade tests should be added before a stable 3.0 release.
+
+### Already published a release manually?
+
+The workflow now checks whether the release exists and uploads assets with `--clobber` if it does. A tag always runs the workflow code from its tagged commit, so a fix committed after an older tag cannot repair a rerun of that older tag. Publish a new tag containing the fix.

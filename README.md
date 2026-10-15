@@ -140,3 +140,8 @@ Administrators and Users can optionally enable **Apply learned corrections to fu
 The `.github/workflows/ci.yml` workflow checks release metadata, runs the initial test suite, builds the Vue frontend, validates Docker Compose and builds both Docker images. Pushing a matching `vX.Y.Z` tag triggers `.github/workflows/release.yml`, which publishes source archives, GitHub release notes from `CHANGELOG.md`, and versioned GHCR images. See [RELEASING.md](RELEASING.md) for the operator checklist.
 
 This infrastructure does **not** change the in-app local-release updater. No GitHub release is published automatically until you push a version tag.
+
+
+### v2.4.3 release automation fix
+
+The release checks accept both `## 2.4.3` and `## [2.4.3]` changelog headings. If you already published a release manually, the tag workflow uploads assets to it rather than trying to create a duplicate. Existing tags point to immutable commits: to run the corrected workflow, publish a new version tag containing the fix rather than rerunning an older tag.

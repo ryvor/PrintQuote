@@ -72,3 +72,12 @@ Administration → Versions & updates lists **locally installed release packages
 **Important:** Before switching versions, take a complete backup. Older releases may not understand newer database formats; a downgrade does not automatically reverse migrations. The runner copies the database to `printquote.before-vVERSION-TIMESTAMP.sqlite` before deploying. Rollback of the database, if needed, is a separate manual recovery operation. Never deploy an untrusted release folder: Compose files can execute host-level actions when run by an administrator.
 
 This feature checks locally provisioned releases; it does not discover releases from the internet. A schedule records the requested change, but the host runner must be configured for it to execute. Existing `admin`, `manager`, and `viewer` roles remain; only admins can manage releases.
+
+
+## v2.2.1: Account editing and email notifications
+
+Administrators can edit usernames, names, email addresses and roles. All account edits require a working SMTP configuration; an email notification is sent to the user's updated email before changes are saved. Password resets generate a random temporary password on the API server and email it directly to the user; the API never returns it. Existing sessions are revoked after reset. Passwords are hashed in SQLite.
+
+Copy `.env.example` to `.env`, configure SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASSWORD, SMTP_FROM and restart `docker compose up -d --build`. Never commit `.env` to Git. The default admin has no email; set it in Administration before using email password reset.
+
+**Security note:** Emailing temporary passwords is less secure than sending a short-lived, single-use password setup link. The temporary password should be changed immediately. Mail delivery is required for changes; if SMTP fails the change is not saved. If mail succeeds but a subsequent database write fails, contact your administrator.

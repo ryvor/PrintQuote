@@ -20,7 +20,7 @@ export async function verifyPassword(password, stored) {
   for(let i=0;i<Math.max(a.length,b.length);i++) difference |= (a[i]||0)^(b[i]||0);
   return difference === 0;
 }
-export const publicUser = u => ({id:u.id,username:u.username,firstName:u.first_name,lastName:u.last_name,role:u.role,mustChangePassword:!!u.must_change_password});
+export const publicUser = u => ({id:u.id,username:u.username,firstName:u.first_name,lastName:u.last_name,role:u.role,email:u.email||'',mustChangePassword:!!u.must_change_password});
 export const sessionExpiry = remember => new Date(Date.now()+(remember?30:1)*86400000).toISOString();
 export const validateUser = body => {
   if (!/^[a-zA-Z0-9_.-]{3,40}$/.test(body.username||'')) return 'Username must be 3–40 letters, digits, dots, underscores or hyphens';

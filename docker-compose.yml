@@ -19,4 +19,5 @@ services:
       SQLITE_PATH: /data/printquote.sqlite
     volumes:
       - /opt/PrintQuote/data:/data
+      - /opt/PrintQuote/releases:/releases:ro
     # Internal-only: API is reachable from the frontend container, not published to the host.

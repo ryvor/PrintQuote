@@ -60,3 +60,15 @@ Vite runs on port 5173, Express on port 3001, and the development database is `s
 
 ### v2.1.3 sign-in appearance fix
 The login page automatically follows the browser/operating system light or dark preference. Its Sign in button uses an explicit high-contrast background and text colour in both modes. In-app appearance settings remain unchanged.
+
+## Version management (v2.2)
+
+Administration → Versions & updates lists **locally installed release packages**, displays each release's README, and allows admins to schedule upgrades or downgrades. Every administrator sees a dismissible update notice independently when a newer locally installed version is available.
+
+**Operator setup:** Store each trusted, reviewed release's extracted `printquote-vue` folder in `/opt/PrintQuote/releases/vX.Y.Z/` (containing `README.md`, `docker-compose.yml`, source files). Install v2.2 itself there too. The API mounts this directory read-only. The UI cannot upload or execute arbitrary packages.
+
+**Scheduled deployments require a host-side runner.** Copy `scripts/apply-scheduled.mjs` to `/opt/PrintQuote/updater/apply-scheduled.mjs`, install its `sql.js` dependency in that directory, and run it from host cron (e.g. every minute) with `PRINTQUOTE_ROOT=/opt/PrintQuote`. The runner executes `docker compose -p printquote ... up -d --build` on the selected trusted release. Do not mount `/var/run/docker.sock` into the public web or API containers. The runner requires permission to run Docker and access the database.
+
+**Important:** Before switching versions, take a complete backup. Older releases may not understand newer database formats; a downgrade does not automatically reverse migrations. The runner copies the database to `printquote.before-vVERSION-TIMESTAMP.sqlite` before deploying. Rollback of the database, if needed, is a separate manual recovery operation. Never deploy an untrusted release folder: Compose files can execute host-level actions when run by an administrator.
+
+This feature checks locally provisioned releases; it does not discover releases from the internet. A schedule records the requested change, but the host runner must be configured for it to execute. Existing `admin`, `manager`, and `viewer` roles remain; only admins can manage releases.

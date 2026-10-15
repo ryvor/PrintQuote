@@ -289,3 +289,35 @@
 
 /* v2.2.2 release preferences */
 .update-prefs{padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:16px}.update-prefs label{display:flex;flex-direction:column;gap:8px;margin:14px 0;font-weight:600}.update-prefs select{max-width:420px;padding:10px;border-radius:10px;background:var(--card);color:var(--ink);border:1px solid var(--line)}.update-prefs .update-check{flex-direction:row;align-items:center;font-weight:500}.update-check input{width:18px;height:18px;accent-color:var(--accent)}
+
+
+/* v2.2.7 — unified form language across workspace, modals and administration */
+.shell { --control-radius: 11px; --control-height: 42px; --control-focus: color-mix(in srgb, var(--accent) 22%, transparent); }
+.shell input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),
+.shell select, .shell textarea {
+  box-sizing:border-box; min-height:var(--control-height); max-width:100%; width:100%;
+  padding:10px 13px; border:1px solid var(--line); border-radius:var(--control-radius);
+  background:var(--input); color:var(--ink); font:inherit; line-height:1.35;
+  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+}
+.shell select { cursor:pointer; padding-right:32px; color-scheme:light; }
+.shell.dark-mode select { color-scheme:dark; }
+.shell input::placeholder,.shell textarea::placeholder {color:var(--muted);opacity:.8}
+.shell input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):hover,
+.shell select:hover,.shell textarea:hover {border-color:var(--hover-border,var(--accent))}
+.shell input:focus-visible,.shell select:focus-visible,.shell textarea:focus-visible,
+.shell button:focus-visible,.shell a:focus-visible {outline:2px solid var(--accent);outline-offset:2px;box-shadow:0 0 0 3px var(--control-focus)}
+.shell input[type=checkbox],.shell input[type=radio],.shell input[type=range] {accent-color:var(--accent);cursor:pointer}
+.shell input[type=checkbox],.shell input[type=radio] {width:18px;height:18px;flex-shrink:0}
+.shell input[type=range] {width:100%;min-height:26px}
+.shell .btn,.shell .icon-button,.shell .nav-link,.shell .sidebar-settings {font:inherit;transition:background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease}
+.shell .btn {border-radius:var(--control-radius);min-height:38px}
+.shell .btn.primary {background:var(--accent);color:#fff;border-color:transparent}
+.shell .btn.primary:hover {filter:brightness(1.08)}
+.shell .update-prefs select {max-width:420px}
+.shell .update-prefs label,.shell .auth-management label {color:var(--ink)}
+.shell .update-check,.shell .v2-checkbox,.shell .feature-option {align-items:center;gap:10px}
+.shell .update-check input,.shell .v2-checkbox input,.shell .feature-option input {width:18px;height:18px;min-height:18px;flex:none}
+.shell.dark-mode {color-scheme:dark}
+.shell:not(.dark-mode) {color-scheme:light}
+@media (prefers-reduced-motion:reduce) {.shell input,.shell select,.shell textarea,.shell button{transition:none!important}}
